@@ -7,15 +7,24 @@ A simple web application that provides you with services such as prayer times, d
 ![Image](https://github.com/user-attachments/assets/6fba5ec9-b962-4361-9cd2-961dad31dfdb)
 
 New improvements and fixes
+
 Added night mode
+
 Added new religious questions and supplications
+
 Improvements in the display of supplications
+
 Added a Hadith of the Day section
+
 Added a complete Stories of the Prophets section
+
 Added a section for supplications from the Quran with audio and text
+
 Added Qibla direction (powered by Google)
 Added the Hijri calendar
+
 Added a complete Quran audio library for download
+
 Added Prophetic supplications
 
 # Tech Stack:
