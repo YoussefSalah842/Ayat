@@ -260,7 +260,7 @@ body.dark-mode #galleryModal .modal-content {
     -webkit-backdrop-filter: blur(10px);
     justify-content: center;
     align-items: center;
-    z-index: 1100; /* أعلى من galleryModal عشان الصورة تظهر قدام */
+    z-index: 1100;
 }
 
 #imageModal .modal-content {

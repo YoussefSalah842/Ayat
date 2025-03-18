@@ -17,7 +17,7 @@ $(document).ready(function() {
     });
 
     $("#moreAzkarDesignsBtn").click(function() {
-        window.open("YOUR_PINTEREST_LINK_HERE", "_blank");
+        window.open("https://www.pinterest.com/search/pins/?q=%D8%A7%D9%84%D8%A7%D8%B0%D9%83%D8%A7%D8%B1&rs=typed", "_blank");
     });
 
     setupModals();
@@ -323,14 +323,14 @@ function openGallery() {
     });
     $("#galleryImages").html(galleryHTML);
     $("#galleryModal").css("display", "flex");
-    $("#imageModal").css("display", "none"); // نتأكد إن مودال الصورة الكبيرة مختفي
+    $("#imageModal").css("display", "none");
 }
 
 function openImageModal(src) {
     $("#largeImage").attr("src", src);
     $("#downloadLink").attr("href", src).attr("download", `Azkar_${src.split('/').pop()}`);
-    $("#galleryModal").css("display", "none"); // نخفي المعرض
-    $("#imageModal").css("display", "flex"); // نظهر الصورة الكبيرة
+    $("#galleryModal").css("display", "none");
+    $("#imageModal").css("display", "flex");
 }
 
 let asmaAllah = [
@@ -568,20 +568,35 @@ async function loadHijriDate() {
 
 function loadAudioQuran() {
     const readers = [
-        "الشيخ مشاري العفاسي", "الشيخ عبد الباسط", "الشيخ السديس", "الشيخ الشريم",
+        "الشيخ مشاري العفاسي", "الشيخ عبد الباسط", "الشيخ السديس",
         "الشيخ ماهر المعيقلي", "الشيخ ياسر الدوسري", "الشيخ الحصري", "الشيخ المنشاوي",
         "الشيخ سعود الشريم", "الشيخ أحمد العجمي", "الشيخ ناصر القطامي", "الشيخ إدريس أبكر",
-        "الشيخ محمد صديق المنشاوي", "الشيخ عبد الرحمن السديس", "الشيخ خالد الجليل",
-        "الشيخ فارس عباد", "الشيخ عبد الله بصفر", "الشيخ هاني الرفاعي", "الشيخ محمود خليل الحصري",
-        "الشيخ عبد المحسن القاسم"
+        "الشيخ عبد الرحمن السديس", "الشيخ خالد الجليل",
+        "الشيخ فارس عباد",
+    ];
+
+    const audioLinks = [
+        "https://archive.org/download/fm_002_20150413_0654/fm_002_20150413_0654_vbr_mp3.zip", // مشاري العفاسي
+        "https://ia903100.us.archive.org/30/items/ABDEL-BASIT.ABDEL-SAMAD.MUJAWAD.FULL.HQ.BY-MAHMOUD-ZIED/ABDEL-BASIT.ABDEL-SAMAD.MUJAWAD.FULL.HQ.BY-MAHMOUD-ZIED_vbr_mp3.zip", // عبد الباسط
+        "https://ia800102.us.archive.org/34/items/sudais_2/sudais_2_vbr_mp3.zip", // السديس
+        "https://ia601602.us.archive.org/5/items/koonoz_blogspot_com_Maher/koonoz_blogspot_com_Maher_vbr_mp3.zip", // ماهر المعيقلي
+        "https://ia902900.us.archive.org/3/items/dos_6/dos_6_vbr_mp3.zip", // ياسر الدوسري
+        "https://ia600409.us.archive.org/3/items/Al-Quran_tilawat_Mahmoud_Al-Hosary/Al-Quran_tilawat_Mahmoud_Al-Hosary_vbr_mp3.zip", // الحصري
+        "https://ia801307.us.archive.org/3/items/Al-Minshawy_Muratal_Quran/Al-Minshawy_Muratal_Quran_vbr_mp3.zip", // المنشاوي
+        "https://ia802900.us.archive.org/1/items/Saud-Al-Shuraim/Saud-Al-Shuraim_vbr_mp3.zip", // الشريم
+        "https://ia801901.us.archive.org/29/items/jam3_11/jam3_11_vbr_mp3.zip", // أحمد العجمي
+        "https://ia800906.us.archive.org/20/items/96--kb---naser--alqetamy--mp3--full--mushaf--quran--114--sora---from-islamhous/96--kb---naser--alqetamy--mp3--full--mushaf--quran--114--sora---from-islamhous_vbr_mp3.zip", // ناصر القطامي
+        "https://ia600200.us.archive.org/12/items/quraan_idrees-abkar.co.cc/quraan_idrees-abkar.co.cc_vbr_mp3.zip", // إدريس أبكر
+        "https://ia803200.us.archive.org/18/items/Khalid_aljalil_mp3/Khalid_aljalil_mp3_vbr_mp3.zip", // خالد الجليل
+        "https://ia801404.us.archive.org/16/items/jam3_40/jam3_40_vbr_mp3.zip", // فارس عباد
     ];
 
     let html = "";
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 13; i++) {
         html += `
             <div class="audio-item">
                 <p>${readers[i]}</p>
-                <button onclick="downloadAudio('AUDIO_LINK_${i}')">تحميل الآن</button>
+                <button onclick="downloadAudio('${audioLinks[i]}')">تحميل الآن</button>
             </div>
         `;
     }
