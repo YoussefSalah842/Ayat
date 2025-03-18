@@ -6,33 +6,29 @@
     <title>تطبيق آيات</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/quran-uthmani/web-font@latest/quran-uthmani.css" />
 </head>
 <body>
+    <div id="dark-mode-toggle">
+        <i class="fas fa-sun"></i>
+    </div>
+
     <h1 style="text-align: center; margin-top: 20px;">تطبيق آيات</h1>
     <div class="container" id="main-content">
         <div class="tabs">
-            <div class="tab" onclick="openTab('tasbe7')">
-                <i class="fas fa-heart"></i> المسبحة
-            </div>
-            <div class="tab" onclick="openTab('salah')">
-                <i class="fas fa-clock"></i> مواقيت الصلاة
-            </div>
-            <div class="tab" onclick="openTab('azkar')">
-                <i class="fas fa-book"></i> الأذكار اليومية
-            </div>
-            <div class="tab" onclick="openTab('questions')">
-                <i class="fas fa-question"></i> أسئلة دينية
-            </div>
-            <div class="tab" onclick="openTab('asma-allah')">
-                <i class="fas fa-star"></i> أسماء الله الحسنى
-            </div>
-            <div class="tab" onclick="openTab('quran')">
-                <i class="fas fa-book-open"></i> القرآن الكريم
-            </div>
-            <div class="tab" onclick="openTab('advice')">
-                <i class="fas fa-lightbulb"></i> النصائح الدينية
-            </div>
+            <div class="tab" onclick="openTab('tasbe7')"><i class="fas fa-heart"></i> المسبحة</div>
+            <div class="tab" onclick="openTab('salah')"><i class="fas fa-clock"></i> مواقيت الصلاة</div>
+            <div class="tab" onclick="openTab('azkar')"><i class="fas fa-book"></i> الأذكار اليومية</div>
+            <div class="tab" onclick="openTab('questions')"><i class="fas fa-question"></i> أسئلة دينية</div>
+            <div class="tab" onclick="openTab('asma-allah')"><i class="fas fa-star"></i> أسماء الله الحسنى</div>
+            <div class="tab" onclick="openTab('quran')"><i class="fas fa-book-open"></i> القرآن الكريم</div>
+            <div class="tab" onclick="openTab('advice')"><i class="fas fa-lightbulb"></i> النصائح الدينية</div>
+            <div class="tab" onclick="openTab('hadith')"><i class="fas fa-quote-right"></i> حديث اليوم</div>
+            <div class="tab" onclick="openTab('stories')"><i class="fas fa-video"></i> قصص الأنبياء</div>
+            <div class="tab" onclick="openTab('duaa-quran')"><i class="fas fa-prayer-hands"></i> أدعية من القرآن</div>
+            <div class="tab" onclick="openTab('qibla')"><i class="fas fa-compass"></i> اتجاه القبلة</div>
+            <div class="tab" onclick="openTab('hijri')"><i class="fas fa-calendar-alt"></i> التقويم الهجري</div>
+            <div class="tab" onclick="openTab('audio-quran')"><i class="fas fa-headphones"></i> مكتبة القرآن الصوتية</div>
+            <div class="tab" onclick="openTab('prophetic-duas')"><i class="fas fa-hands"></i> الأدعية النبوية</div>
         </div>
 
         <div id="tasbe7" class="tab-content">
@@ -41,18 +37,17 @@
                 <p id="text">ابدأ التسبيح</p>
             </div>
             <p id="score">العدد: 0</p>
+            <p id="progress">التقدم: 0%</p>
             <button onclick="resetCounter()">إعادة العداد</button>
         </div>
 
         <div id="salah" class="tab-content">
             <h2>مواقيت الصلاة</h2>
             <button onclick="getPrayerTimesByLocation()">تحديد الموقع الحالي</button>
-            <label for="city">اختر المدينة:</label>
-            <input type="text" id="city" placeholder="ابحث عن مدينة" />
             <label for="country">اختر الدولة:</label>
             <select id="country"></select>
-            <label for="province">اختر المحافظة:</label>
-            <select id="province"></select>
+            <label for="city">اختر المنطقة:</label>
+            <select id="city"></select>
             <button onclick="getPrayerTimes()">عرض المواقيت</button>
             <div id="prayer-times"></div>
         </div>
@@ -96,6 +91,23 @@
                 <div class="advice-item" onclick="showAdvice('azkar')">كيف تدوام على الأذكار اليومية؟</div>
                 <div class="advice-item" onclick="showAdvice('repentance')">كيف تتوب إلى الله توبة نصوحة؟</div>
                 <div class="advice-item" onclick="showAdvice('quran')">كيف تحفظ القرآن الكريم؟</div>
+                <div class="advice-item" onclick="showAdvice('wudu')">إزاي تحافظ على وضوءك طول اليوم؟</div>
+                <div class="advice-item" onclick="showAdvice('dailyQuran')">إزاي تقرأ ورد يومي من القرآن؟</div>
+                <div class="advice-item" onclick="showAdvice('goodDeeds')">إزاي تخلي يومك مليان حسنات؟</div>
+                <div class="advice-item" onclick="showAdvice('avoidSins')">إزاي تتجنب المعاصي اللي بتتكرر منك؟</div>
+                <div class="advice-item" onclick="showAdvice('endDay')">إزاي تختم يومك بذكر حسن؟</div>
+                <div class="advice-item" onclick="showAdvice('cleanHeart')">إزاي تحافظ على قلبك سليم ونظيف؟</div>
+                <div class="advice-item" onclick="showAdvice('noProcrastination')">إزاي تبعد عن التسويف في العبادات؟</div>
+                <div class="advice-item" onclick="showAdvice('freeTime')">إزاي تستغل وقت فراغك في حاجة تنفعك؟</div>
+                <div class="advice-item" onclick="showAdvice('strongerFaith')">إزاي تقوّي علاقتك بربنا؟</div>
+                <div class="advice-item" onclick="showAdvice('khushoo')">إزاي تخلي صلاتك بخشوع؟</div>
+                <div class="advice-item" onclick="showAdvice('abandonSin')">إزاي تسيب ذنب متعلق بيك بقاله سنين؟</div>
+                <div class="advice-item" onclick="showAdvice('guardTongue')">إزاي تحافظ على لسانك من الغيبة والنميمة؟</div>
+                <div class="advice-item" onclick="showAdvice('blessedHome')">إزاي تخلي بيتك فيه بركة وراحة نفسية؟</div>
+                <div class="advice-item" onclick="showAdvice('friday')">إزاي تستغل يوم الجمعة صح؟</div>
+                <div class="advice-item" onclick="showAdvice('positiveStart')">إزاي تبدأ يومك بطاقة إيجابية؟</div>
+                <div class="advice-item" onclick="showAdvice('protectEnvy')">إزاي تحمي نفسك من الحسد والعين؟</div>
+                <div class="advice-item" onclick="showAdvice('contentment')">إزاي تحس بالرضا في حياتك؟</div>
             </div>
             <div id="advice-content" style="display: none;">
                 <h3 id="advice-title"></h3>
@@ -103,25 +115,84 @@
                 <button onclick="backToAdviceList()">العودة إلى القائمة</button>
             </div>
         </div>
+
+        <div id="hadith" class="tab-content">
+            <h2>حديث اليوم</h2>
+            <div id="hadith-content">
+                <p id="hadith-text">جاري تحميل الحديث...</p>
+                <p id="hadith-reference"></p>
+            </div>
+            <button onclick="loadHadith()">تحديث الحديث</button>
+        </div>
+
+        <div id="stories" class="tab-content">
+            <h2>قصص الأنبياء</h2>
+            <div id="stories-grid" class="grid-container"></div>
+        </div>
+
+        <div id="duaa-quran" class="tab-content">
+            <h2>أدعية من القرآن الكريم</h2>
+            <div class="container cards active">
+                <span class="nav-btn" id="left-btn"><i class="fas fa-chevron-left"></i></span>
+                <span class="card">
+                    <span class="content"></span>
+                    <span class="details">
+                        <span class="soura_name"></span>
+                        <span class="ayah_num"></span>
+                    </span>
+                </span>
+                <span class="nav-btn" id="right-btn"><i class="fas fa-chevron-right"></i></span>
+            </div>
+            <div class="btns-container">
+                <span id="audioBtn" class="btns"><i class="fas fa-play"></i></span>
+            </div>
+            <audio id="myAudio"></audio>
+        </div>
+
+        <div id="qibla" class="tab-content">
+            <h2>اتجاه القبلة</h2>
+            <div id="qibla-direction">
+                <iframe id="qibla-iframe" width="100%" height="500" frameborder="0" src="https://qiblafinder.withgoogle.com/"></iframe>
+            </div>
+        </div>
+
+        <div id="hijri" class="tab-content">
+            <h2>التقويم الهجري</h2>
+            <div id="hijri-date"></div>
+        </div>
+
+        <div id="audio-quran" class="tab-content">
+            <h2>مكتبة القرآن الصوتية</h2>
+            <div id="audio-grid" class="grid-container"></div>
+            <button id="download-all-audio" style="margin-top: 20px;">تنزيل المكتبة الصوتية كاملة</button>
+        </div>
+
+        <div id="prophetic-duas" class="tab-content">
+            <h2>الأدعية النبوية</h2>
+            <div id="duas-list"></div>
+        </div>
     </div>
 
     <div id="error-modal" class="modal">
         <div class="modal-content">
-            <span class="close-button">&times;</span>
+            <span class="close-button">×</span>
             <p id="error-message"></p>
         </div>
     </div>
 
     <div id="galleryModal" class="modal">
         <div class="modal-content">
-            <span class="close-gallery close-button">&times;</span>
+            <span class="close-gallery close-button">×</span>
             <div id="galleryImages"></div>
+            <button id="moreAzkarDesignsBtn">
+                <i class="fab fa-pinterest"></i> عرض المزيد من تصاميم الأذكار
+            </button>
         </div>
     </div>
 
     <div id="imageModal" class="modal">
         <div class="modal-content">
-            <span class="close-image close-button">&times;</span>
+            <span class="close-image close-button">×</span>
             <img id="largeImage" src="" alt="Azkar Image" style="max-width: 100%;" />
             <br>
             <a id="downloadLink" href="" download="" style="display: block; margin-top: 10px;">تحميل الصورة</a>
