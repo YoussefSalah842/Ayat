@@ -1,639 +1,850 @@
-$(document).ready(function() {
-    $("#main-content").show();
-    openTab('tasbe7');
-    loadCountries();
+$(document).ready(function () {
+    // Loading Screen
+    function showLoadingScreen() {
+        $("#loading-screen").show();
+        setTimeout(function () {
+            $("#loading-screen").addClass("fade-out");
+            setTimeout(function () {
+                $("#loading-screen").hide();
+                $("#main-content").fadeIn();
+            }, 500);
+        }, 5000);
+    }
+    showLoadingScreen();
 
-    $("#azkarGalleryBtn").click(function() {
-        openGallery();
-    });
-
-    $("#dark-mode-toggle").click(function() {
+    // Dark Mode Toggle
+    $("#dark-mode-toggle").click(function () {
         $("body").toggleClass("dark-mode");
-        if ($("body").hasClass("dark-mode")) {
-            $("#dark-mode-toggle").html('<i class="fas fa-moon"></i>');
-        } else {
-            $("#dark-mode-toggle").html('<i class="fas fa-sun"></i>');
+        $(this).find("i").toggleClass("fa-sun fa-moon");
+        localStorage.setItem("darkMode", $("body").hasClass("dark-mode"));
+    });
+    if (localStorage.getItem("darkMode") === "true") {
+        $("body").addClass("dark-mode");
+        $("#dark-mode-toggle i").removeClass("fa-sun").addClass("fa-moon");
+    }
+
+    // Settings Modal
+    $("#settings-toggle").click(function () {
+        $("#settings-modal").fadeIn();
+    });
+    $(".close-button").click(function () {
+        $(this).closest(".modal").fadeOut();
+    });
+
+    // Font and Background Settings
+    $("#font-select").change(function () {
+        $("body").css("font-family", $(this).val() + ", sans-serif");
+        localStorage.setItem("font", $(this).val());
+    });
+    $("#bg-color-select").change(function () {
+        $("body").css("background-color", $(this).val());
+        localStorage.setItem("bgColor", $(this).val());
+    });
+    if (localStorage.getItem("font")) {
+        $("body").css("font-family", localStorage.getItem("font") + ", sans-serif");
+        $("#font-select").val(localStorage.getItem("font"));
+    }
+    if (localStorage.getItem("bgColor")) {
+        $("body").css("background-color", localStorage.getItem("bgColor"));
+        $("#bg-color-select").val(localStorage.getItem("bgColor"));
+    }
+
+    // Notifications Toggle
+    $("#notifications-toggle").change(function () {
+        localStorage.setItem("notifications", $(this).is(":checked"));
+    });
+    if (localStorage.getItem("notifications") === "true") {
+        $("#notifications-toggle").prop("checked", true);
+    }
+
+    // Tasbe7 Counter
+    let counter = 0;
+    let goal = 100;
+    $("#circle").click(function () {
+        counter++;
+        $("#score").text("العدد: " + counter);
+        let progress = (counter / goal) * 100;
+        $("#progress").text("التقدم: " + Math.min(progress, 100).toFixed(0) + "%");
+        if (counter >= goal) {
+            $("#circle").css("background-color", "#28a745");
+            $("#text").text("مبروك! اكتمل التسبيح");
+            $("#progress").text("التقدم: 100%");
         }
+        localStorage.setItem("tasbe7Counter", counter);
+        updateStats("tasbe7", counter);
     });
-
-    $("#moreAzkarDesignsBtn").click(function() {
-        window.open("https://www.pinterest.com/search/pins/?q=%D8%A7%D9%84%D8%A7%D8%B0%D9%83%D8%A7%D8%B1&rs=typed", "_blank");
-    });
-
-    setupModals();
-});
-
-function openTab(tabName) {
-    $(".tab-content").hide();
-    $("#" + tabName).show();
-
-    switch (tabName) {
-        case 'tasbe7':
-            resetCounter();
-            break;
-        case 'salah':
-            loadCountries();
-            break;
-        case 'azkar':
-            prevZikr();
-            break;
-        case 'questions':
-            prevQuestion();
-            break;
-        case 'asma-allah':
-            displayAsmaAllah();
-            break;
-        case 'quran':
-            loadQuran();
-            break;
-        case 'advice':
-            break;
-        case 'hadith':
-            loadHadith();
-            break;
-        case 'stories':
-            loadStories();
-            break;
-        case 'duaa-quran':
-            loadDuaaQuran();
-            break;
-        case 'qibla':
-            break;
-        case 'hijri':
-            loadHijriDate();
-            break;
-        case 'audio-quran':
-            loadAudioQuran();
-            break;
-        case 'prophetic-duas':
-            loadPropheticDuas();
-            break;
-        default:
-            console.log("تبويب غير معروف: " + tabName);
+    function resetCounter() {
+        counter = 0;
+        $("#score").text("العدد: 0");
+        $("#progress").text("التقدم: 0%");
+        $("#circle").css("background-color", "#692079");
+        $("#text").text("ابدأ التسبيح");
+        localStorage.setItem("tasbe7Counter", counter);
+        updateStats("tasbe7", counter);
     }
-}
-
-let tasbe7at = ["سبحان الله", "الحمد لله", "لا إله إلا الله", "الله أكبر"];
-let clicks = 10, n = 0, score = 0, totalClicks = 40;
-
-function count() {
-    clicks--;
-    if (clicks <= 0) {
-        score++;
-        clicks = 10;
-        n = (n + 1) % tasbe7at.length;
+    if (localStorage.getItem("tasbe7Counter")) {
+        counter = parseInt(localStorage.getItem("tasbe7Counter"));
+        $("#score").text("العدد: " + counter);
+        let progress = (counter / goal) * 100;
+        $("#progress").text("التقدم: " + Math.min(progress, 100).toFixed(0) + "%");
+        if (counter >= goal) {
+            $("#circle").css("background-color", "#28a745");
+            $("#text").text("مبروك! اكتمل التسبيح");
+        }
     }
-    $("#text").html(tasbe7at[n] + ": " + clicks);
-    $("#score").html("العدد: " + score);
-    let progress = Math.round((score * 10 / totalClicks) * 100);
-    $("#progress").html("التقدم: " + progress + "%");
-}
+    window.resetCounter = resetCounter;
 
-function resetCounter() {
-    score = 0;
-    clicks = 10;
-    n = 0;
-    $("#score").html("العدد: " + score);
-    $("#text").html("ابدأ التسبيح");
-    $("#progress").html("التقدم: 0%");
-}
-
-async function getPrayerTimesByLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const lat = position.coords.latitude,
-                  long = position.coords.longitude;
-            $("#prayer-times").html("جاري تحميل مواقيت الصلاة...");
-            try {
-                const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${long}&method=5`);
-                const data = await response.json();
-                displayPrayerTimes(data.data.timings);
-            } catch (error) {
-                showError("حدث خطأ أثناء جلب مواقيت الصلاة.");
-            }
-        }, (error) => {
-            showError("لم يتم تحديد الموقع.");
-        });
-    } else {
-        showError("المتصفح لا يدعم تحديد الموقع الجغرافي.");
-    }
-}
-
-async function getPrayerTimes() {
-    const city = $("#city").val(), country = $("#country").val();
-    if (!city || !country) {
-        showError("يرجى اختيار الدولة والمنطقة.");
-        return;
-    }
-    $("#prayer-times").html("جاري تحميل مواقيت الصلاة...");
-    try {
-        const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=5`);
-        const data = await response.json();
-        displayPrayerTimes(data.data.timings);
-    } catch (error) {
-        showError("حدث خطأ أثناء جلب مواقيت الصلاة. تحقق من الاتصال.");
-    }
-}
-
-function displayPrayerTimes(times) {
-    const prayers = { Fajr: "الفجر", Dhuhr: "الظهر", Asr: "العصر", Maghrib: "المغرب", Isha: "العشاء" };
-    let html = '<table>';
-    html += '<tr><th>الصلاة</th><th>الوقت</th></tr>';
-    for (let prayer in prayers) {
-        html += `<tr><td>${prayers[prayer]}</td><td>${times[prayer]}</td></tr>`;
-    }
-    html += '</table>';
-    $("#prayer-times").html(html);
-}
-
-function loadCountries() {
-    const countrySelect = $("#country");
-    countrySelect.empty();
-    countrySelect.append('<option value="">اختر دولة</option>');
-
-    const countries = {
-        "مصر": "Egypt",
-        "السعودية": "Saudi Arabia",
-        "الإمارات": "United Arab Emirates",
-        "الأردن": "Jordan",
-        "قطر": "Qatar",
-        "الكويت": "Kuwait",
-        "البحرين": "Bahrain",
-        "عمان": "Oman",
-        "سوريا": "Syria",
-        "العراق": "Iraq",
-        "لبنان": "Lebanon",
-        "المغرب": "Morocco",
-        "الجزائر": "Algeria",
-        "تونس": "Tunisia",
-        "ليبيا": "Libya",
-        "السودان": "Sudan",
-        "اليمن": "Yemen"
-    };
-
-    for (let name in countries) {
-        countrySelect.append(`<option value="${countries[name]}">${name}</option>`);
-    }
-}
-
-$("#country").change(function() {
-    const countryCode = $(this).val();
-    loadCities(countryCode);
-});
-
-function loadCities(countryCode) {
-    const citySelect = $("#city");
-    citySelect.empty();
-    citySelect.append('<option value="">اختر منطقة</option>');
-
-    const cities = {
-        "Egypt": ["القاهرة", "الإسكندرية", "الجيزة", "أسوان", "الأقصر"],
-        "Saudi Arabia": ["الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام"],
-        "United Arab Emirates": ["دبي", "أبوظبي", "الشارقة", "العين"],
-        "Jordan": ["عمان", "إربد", "الزرقاء"],
-        "Qatar": ["الدوحة", "الريان"],
-        "Kuwait": ["مدينة الكويت", "حولي"],
-        "Bahrain": ["المنامة", "المحرق"],
-        "Oman": ["مسقط", "صلالة"],
-        "Syria": ["دمشق", "حلب"],
-        "Iraq": ["بغداد", "البصرة"],
-        "Lebanon": ["بيروت", "طرابلس"],
-        "Morocco": ["الرباط", "الدار البيضاء"],
-        "Algeria": ["الجزائر العاصمة", "وهران"],
-        "Tunisia": ["تونس", "صفاقس"],
-        "Libya": ["طرابلس", "بنغازي"],
-        "Sudan": ["الخرطوم", "أم درمان"],
-        "Yemen": ["صنعاء", "عدن"]
-    };
-
-    if (cities[countryCode]) {
-        cities[countryCode].forEach(city => {
-            citySelect.append(`<option value="${city}">${city}</option>`);
+    // Prayer Times
+    function populateCountries() {
+        const countries = [
+            "مصر", "السعودية", "الإمارات", "الكويت", "قطر", "البحرين", "الأردن", "لبنان", "العراق",
+            "الجزائر", "المغرب", "تونس", "ليبيا", "السودان", "فلسطين", "سوريا", "اليمن", "عمان"
+        ];
+        $("#country").empty().append('<option value="">اختر الدولة</option>');
+        countries.forEach(function (country) {
+            $("#country").append(`<option value="${country}">${country}</option>`);
         });
     }
-}
-
-let azkar = [
-    "أذكار الصباح: اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور",
-    "أذكار المساء: اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير",
-    "أذكار النوم: باسمك ربي وضعت جنبي وبك أرفعه، إن أمسكت نفسي فارحمها، وإن أرسلتها فاحفظها بما تحفظ به عبادك الصالحين",
-    "أستغفر الله العظيم الذي لا إله إلا هو الحي القيوم وأتوب إليه",
-    "اللهم إني أسألك علماً نافعاً ورزقاً طيباً وعملاً متقبلاً",
-    "سبحان الله وبحمده، عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته",
-    "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير"
-];
-let currentZikr = 0;
-function nextZikr() {
-    currentZikr = (currentZikr + 1) % azkar.length;
-    $("#azkar-content").html(`<p style="font-size: 1.2em;">${azkar[currentZikr]}</p>`);
-}
-function prevZikr() {
-    currentZikr = (currentZikr - 1 + azkar.length) % azkar.length;
-    $("#azkar-content").html(`<p style="font-size: 1.2em;">${azkar[currentZikr]}</p>`);
-}
-
-let questions = [
-    { q: "ما هو تعريف الصلاة؟", a: "الصلاة هي عبادة الله تعالى وتواصل بين العبد وربه." },
-    { q: "ما هي أركان الإسلام؟", a: "الشهادة، الصلاة، الزكاة، الصوم، والحج." },
-    { q: "ما هي أركان الإيمان؟", a: "الإيمان بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، والقدر خيره وشره." },
-    { q: "من هو أول نبي؟", a: "آدم عليه السلام هو أول نبي ورسول." },
-    { q: "ما هي أول سورة نزلت في القرآن؟", a: "سورة العلق (اقرأ باسم ربك)." },
-    { q: "ما هو اسم أم النبي محمد؟", a: "آمنة بنت وهب." },
-    { q: "كم عدد أسماء الله الحسنى؟", a: "99 اسمًا." },
-    { q: "ما هو الكتاب الذي أنزل على عيسى عليه السلام؟", a: "الإنجيل." },
-    { q: "ما هي السورة التي تسمى قلب القرآن؟", a: "سورة يس." },
-    { q: "ما هي أول صلاة فرضت على المسلمين؟", a: "صلاة الفجر والعصر (قبل الإسراء والمعراج)." },
-    { q: "من هو النبي الذي ابتلعه الحوت؟", a: "يونس عليه السلام." },
-    { q: "ما هو اسم الجبل الذي رست عليه سفينة نوح؟", a: "جبل الجودي." },
-    { q: "ما هي السورة التي نزلت كاملة؟", a: "سورة الفاتحة." }
-];
-let currentQuestion = 0;
-function nextQuestion() {
-    currentQuestion = (currentQuestion + 1) % questions.length;
-    $("#questions-content").html(
-      `<p style="font-size: 1.2em;">س: ${questions[currentQuestion].q}</p>` +
-      `<p style="font-size: 1.2em;">ج: ${questions[currentQuestion].a}</p>`
-    );
-}
-function prevQuestion() {
-    currentQuestion = (currentQuestion - 1 + questions.length) % questions.length;
-    $("#questions-content").html(
-      `<p style="font-size: 1.2em;">س: ${questions[currentQuestion].q}</p>` +
-      `<p style="font-size: 1.2em;">ج: ${questions[currentQuestion].a}</p>`
-    );
-}
-
-function showError(message) {
-    $("#error-message").html(message);
-    $("#error-modal").css("display", "flex");
-}
-
-function setupModals() {
-    $(".close-button").click(function() {
-        $("#error-modal").css("display", "none");
-        $("#galleryModal").css("display", "none");
-        $("#imageModal").css("display", "none");
-    });
-}
-
-function loadQuran() {
-    fetch('https://api.alquran.cloud/v1/surah')
-        .then(response => response.json())
-        .then(data => {
-            let suraList = "";
-            data.data.sort((a, b) => a.number - b.number).forEach(sura => {
-                suraList += `
-                    <div class="sura-button" onclick="showSura(${sura.number})">
-                        ${sura.name}
-                        <div class="sura-type">${sura.revelationType === "Meccan" ? "مكية" : "مدنية"}</div>
-                    </div>
-                `;
+    function populateCities(country) {
+        const cities = {
+            "مصر": ["القاهرة", "الإسكندرية", "الجيزة", "شرم الشيخ", "الأقصر", "أسوان", "المنصورة"],
+            "السعودية": ["الرياض", "جدة", "مكة المكرمة", "المدينة المنورة", "الدمام", "الطائف"],
+            "الإمارات": ["دبي", "أبوظبي", "الشارقة", "العين", "رأس الخيمة"],
+            "الكويت": ["مدينة الكويت", "حولي", "الفروانية", "الأحمدي"],
+            "قطر": ["الدوحة", "الريان", "الوكرة"],
+            "البحرين": ["المنامة", "المحرق", "الرفاع"],
+            "الأردن": ["عمان", "إربد", "الزرقاء", "العقبة"],
+            "لبنان": ["بيروت", "طرابلس", "صيدا", "صور"],
+            "العراق": ["بغداد", "البصرة", "الموصل", "أربيل"],
+            "الجزائر": ["الجزائر العاصمة", "وهران", "قسنطينة", "عنابة"],
+            "المغرب": ["الرباط", "الدار البيضاء", "فاس", "مراكش"],
+            "تونس": ["تونس العاصمة", "صفاقس", "سوسة", "القيروان"],
+            "ليبيا": ["طرابلس", "بنغازي", "مصراتة", "سبها"],
+            "السودان": ["الخرطوم", "أم درمان", "بورتسودان", "نيالا"],
+            "فلسطين": ["غزة", "رام الله", "القدس", "نابلس"],
+            "سوريا": ["دمشق", "حلب", "حمص", "اللاذقية"],
+            "اليمن": ["صنعاء", "عدن", "تعز", "الحديدة"],
+            "عمان": ["مسقط", "صلالة", "صحار", "نزوى"]
+        };
+        $("#city").empty().append('<option value="">اختر المنطقة</option>');
+        if (cities[country]) {
+            cities[country].forEach(function (city) {
+                $("#city").append(`<option value="${city}">${city}</option>`);
             });
-            $("#quranResults").html(suraList);
-        })
-        .catch(error => showError("حدث خطأ أثناء تحميل السور القرآنية."));
-}
+        }
+    }
+    $("#country").change(function () {
+        let country = $(this).val();
+        if (country) populateCities(country);
+    });
+    window.getPrayerTimes = function () {
+        sleeptime(1000);
+        let country = $("#country").val();
+        let city = $("#city").val();
+        if (!country || !city) {
+            showError("يرجى اختيار الدولة والمنطقة");
+            return;
+        }
+        $.getJSON(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=5`, function (data) {
+            let timings = data.data.timings;
+            let date = data.data.date.readable;
+            let table = `
+                <table>
+                    <tr><th>الصلاة</th><th>الوقت</th></tr>
+                    <tr><td>الفجر</td><td>${timings.Fajr}</td></tr>
+                    <tr><td>الظهر</td><td>${timings.Dhuhr}</td></tr>
+                    <tr><td>العصر</td><td>${timings.Asr}</td></tr>
+                    <tr><td>المغرب</td><td>${timings.Maghrib}</td></tr>
+                    <tr><td>العشاء</td><td>${timings.Isha}</td></tr>
+                </table>
+                <p>التاريخ: ${date}</p>`;
+            $("#prayer-times").html(table);
+        }).fail(function () {
+            showError("حدث خطأ أثناء جلب مواقيت الصلاة");
+        });
+    };
+    window.getPrayerTimesByLocation = function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                let lat = position.coords.latitude;
+                let lon = position.coords.longitude;
+                $.getJSON(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=5`, function (data) {
+                    let timings = data.data.timings;
+                    let date = data.data.date.readable;
+                    let table = `
+                        <table>
+                            <tr><th>الصلاة</th><th>الوقت</th></tr>
+                            <tr><td>الفجر</td><td>${timings.Fajr}</td></tr>
+                            <tr><td>الظهر</td><td>${timings.Dhuhr}</td></tr>
+                            <tr><td>العصر</td><td>${timings.Asr}</td></tr>
+                            <tr><td>المغرب</td><td>${timings.Maghrib}</td></tr>
+                            <tr><td>العشاء</td><td>${timings.Isha}</td></tr>
+                        </table>
+                        <p>التاريخ: ${date}</p>`;
+                    $("#prayer-times").html(table);
+                }).fail(function () {
+                    showError("حدث خطأ أثناء جلب مواقيت الصلاة");
+                });
+            }, function () {
+                showError("يرجى السماح بتحديد الموقع");
+            });
+        } else {
+            showError("المتصفح لا يدعم تحديد الموقع");
+        }
+    };
+    populateCountries();
 
-function showSura(number) {
-    fetch(`https://api.alquran.cloud/v1/surah/${number}`)
-        .then(response => response.json())
-        .then(data => {
-            $("#suraTitle").html(data.data.name);
-            $("#suraText").html(
-              data.data.ayahs.map(ayah =>
-                `<p class="quran-text">${ayah.text}<span class="ayah-number">${ayah.numberInSurah}</span></p>`
-              ).join('')
-            );
+    // Quran Section
+    const suraData = [
+        { name: "الفاتحة", verses: 7, type: "مكية" },
+        { name: "البقرة", verses: 286, type: "مدنية" },
+        { name: "آل عمران", verses: 200, type: "مدنية" },
+        { name: "النساء", verses: 176, type: "مدنية" },
+        { name: "المائدة", verses: 120, type: "مدنية" },
+        { name: "الأنعام", verses: 165, type: "مكية" },
+        { name: "الأعراف", verses: 206, type: "مكية" },
+        { name: "الأنفال", verses: 75, type: "مدنية" },
+        { name: "التوبة", verses: 129, type: "مدنية" },
+        { name: "يونس", verses: 109, type: "مكية" },
+        { name: "هود", verses: 123, type: "مكية" },
+        { name: "يوسف", verses: 111, type: "مكية" },
+        { name: "الرعد", verses: 43, type: "مدنية" },
+        { name: "إبراهيم", verses: 52, type: "مكية" },
+        { name: "الحجر", verses: 99, type: "مكية" },
+        { name: "النحل", verses: 128, type: "مكية" },
+        { name: "الإسراء", verses: 111, type: "مكية" },
+        { name: "الكهف", verses: 110, type: "مكية" },
+        { name: "مريم", verses: 98, type: "مكية" },
+        { name: "طه", verses: 135, type: "مكية" },
+        { name: "الأنبياء", verses: 112, type: "مكية" },
+        { name: "الحج", verses: 78, type: "مدنية" },
+        { name: "المؤمنون", verses: 118, type: "مكية" },
+        { name: "النور", verses: 64, type: "مدنية" },
+        { name: "الفرقان", verses: 77, type: "مكية" },
+        { name: "الشعراء", verses: 227, type: "مكية" },
+        { name: "النمل", verses: 93, type: "مكية" },
+        { name: "القصص", verses: 88, type: "مكية" },
+        { name: "العنكبوت", verses: 69, type: "مكية" },
+        { name: "الروم", verses: 60, type: "مكية" },
+        { name: "لقمان", verses: 34, type: "مكية" },
+        { name: "السجدة", verses: 30, type: "مكية" },
+        { name: "الأحزاب", verses: 73, type: "مدنية" },
+        { name: "سبأ", verses: 54, type: "مكية" },
+        { name: "فاطر", verses: 45, type: "مكية" },
+        { name: "يس", verses: 83, type: "مكية" },
+        { name: "الصافات", verses: 182, type: "مكية" },
+        { name: "ص", verses: 88, type: "مكية" },
+        { name: "الزمر", verses: 75, type: "مكية" },
+        { name: "غافر", verses: 85, type: "مكية" },
+        { name: "فصلت", verses: 54, type: "مكية" },
+        { name: "الشورى", verses: 53, type: "مكية" },
+        { name: "الزخرف", verses: 89, type: "مكية" },
+        { name: "الدخان", verses: 59, type: "مكية" },
+        { name: "الجاثية", verses: 37, type: "مكية" },
+        { name: "الأحقاف", verses: 35, type: "مكية" },
+        { name: "محمد", verses: 38, type: "مدنية" },
+        { name: "الفتح", verses: 29, type: "مدنية" },
+        { name: "الحجرات", verses: 18, type: "مدنية" },
+        { name: "ق", verses: 45, type: "مكية" },
+        { name: "الذاريات", verses: 60, type: "مكية" },
+        { name: "الطور", verses: 49, type: "مكية" },
+        { name: "النجم", verses: 62, type: "مكية" },
+        { name: "القمر", verses: 55, type: "مكية" },
+        { name: "الرحمن", verses: 78, type: "مدنية" },
+        { name: "الواقعة", verses: 96, type: "مكية" },
+        { name: "الحديد", verses: 29, type: "مدنية" },
+        { name: "المجادلة", verses: 22, type: "مدنية" },
+        { name: "الحشر", verses: 24, type: "مدنية" },
+        { name: "الممتحنة", verses: 13, type: "مدنية" },
+        { name: "الصف", verses: 14, type: "مدنية" },
+        { name: "الجمعة", verses: 11, type: "مدنية" },
+        { name: "المنافقون", verses: 11, type: "مدنية" },
+        { name: "التغابن", verses: 18, type: "مدنية" },
+        { name: "الطلاق", verses: 12, type: "مدنية" },
+        { name: "التحريم", verses: 12, type: "مدنية" },
+        { name: "الملك", verses: 30, type: "مكية" },
+        { name: "القلم", verses: 52, type: "مكية" },
+        { name: "الحاقة", verses: 52, type: "مكية" },
+        { name: "المعارج", verses: 44, type: "مكية" },
+        { name: "نوح", verses: 28, type: "مكية" },
+        { name: "الجن", verses: 28, type: "مكية" },
+        { name: "المزمل", verses: 20, type: "مكية" },
+        { name: "المدثر", verses: 56, type: "مكية" },
+        { name: "القيامة", verses: 40, type: "مكية" },
+        { name: "الإنسان", verses: 31, type: "مدنية" },
+        { name: "المرسلات", verses: 50, type: "مكية" },
+        { name: "النبأ", verses: 40, type: "مكية" },
+        { name: "النازعات", verses: 46, type: "مكية" },
+        { name: "عبس", verses: 42, type: "مكية" },
+        { name: "التكوير", verses: 29, type: "مكية" },
+        { name: "الإنفطار", verses: 19, type: "مكية" },
+        { name: "المطففين", verses: 36, type: "مكية" },
+        { name: "الإنشقاق", verses: 25, type: "مكية" },
+        { name: "البروج", verses: 22, type: "مكية" },
+        { name: "الطارق", verses: 17, type: "مكية" },
+        { name: "الأعلى", verses: 19, type: "مكية" },
+        { name: "الغاشية", verses: 26, type: "مكية" },
+        { name: "الفجر", verses: 30, type: "مكية" },
+        { name: "البلد", verses: 20, type: "مكية" },
+        { name: "الشمس", verses: 15, type: "مكية" },
+        { name: "الليل", verses: 21, type: "مكية" },
+        { name: "الضحى", verses: 11, type: "مكية" },
+        { name: "الشرح", verses: 8, type: "مكية" },
+        { name: "التين", verses: 8, type: "مكية" },
+        { name: "العلق", verses: 19, type: "مكية" },
+        { name: "القدر", verses: 5, type: "مكية" },
+        { name: "البينة", verses: 8, type: "مدنية" },
+        { name: "الزلزلة", verses: 8, type: "مدنية" },
+        { name: "العاديات", verses: 11, type: "مكية" },
+        { name: "القارعة", verses: 11, type: "مكية" },
+        { name: "التكاثر", verses: 8, type: "مكية" },
+        { name: "العصر", verses: 3, type: "مكية" },
+        { name: "الهمزة", verses: 9, type: "مكية" },
+        { name: "الفيل", verses: 5, type: "مكية" },
+        { name: "قريش", verses: 4, type: "مكية" },
+        { name: "الماعون", verses: 7, type: "مكية" },
+        { name: "الكوثر", verses: 3, type: "مكية" },
+        { name: "الكافرون", verses: 6, type: "مكية" },
+        { name: "النصر", verses: 3, type: "مدنية" },
+        { name: "المسد", verses: 5, type: "مكية" },
+        { name: "الإخلاص", verses: 4, type: "مكية" },
+        { name: "الفلق", verses: 5, type: "مكية" },
+        { name: "الناس", verses: 6, type: "مكية" },
+    ];
+
+    function loadQuranResults() {
+        $("#quranResults").empty();
+        suraData.forEach((sura, index) => {
+            $("#quranResults").append(`
+                <div class="sura-button" data-sura="${index + 1}">
+                    ${sura.name}
+                    <div class="sura-type">${sura.type}</div>
+                </div>
+            `);
+        });
+        $("#quranResults").show();
+        $("#quranContent").hide();
+    }
+
+    loadQuranResults();
+
+    $(document).on("click", ".sura-button", function () {
+        let suraNumber = $(this).data("sura");
+        $.getJSON(`https://api.alquran.cloud/v1/surah/${suraNumber}/ar`, function (data) {
+            let sura = data.data;
+            $("#suraTitle").text(sura.name);
+            $("#suraText").empty();
+            sura.ayahs.forEach((ayah, index) => {
+                $("#suraText").append(`
+                    <div class="quran-text">
+                        ${ayah.text} <span class="ayah-number">${ayah.numberInSurah}</span>
+                    </div>
+                `);
+            });
             $("#quranResults").hide();
             $("#quranContent").show();
-        })
-        .catch(error => showError("حدث خطأ أثناء تحميل السورة."));
-}
-
-function backToResults() {
-    $("#quranContent").hide();
-    $("#quranResults").show();
-}
-
-function openGallery() {
-    const images = ["1.jpg", "2.jpg", "3.jpg"];
-    let galleryHTML = "";
-    images.forEach((src, index) => {
-        galleryHTML += `<img src="${src}" alt="Azkar ${index + 1}" onclick="openImageModal('${src}')">`;
+            updateStats("quran", parseInt(localStorage.getItem("quranCount") || "0") + 1);
+        }).fail(function () {
+            showError("حدث خطأ أثناء جلب نصوص القرآن");
+        });
     });
-    $("#galleryImages").html(galleryHTML);
-    $("#galleryModal").css("display", "flex");
-    $("#imageModal").css("display", "none");
-}
 
-function openImageModal(src) {
-    $("#largeImage").attr("src", src);
-    $("#downloadLink").attr("href", src).attr("download", `Azkar_${src.split('/').pop()}`);
-    $("#galleryModal").css("display", "none");
-    $("#imageModal").css("display", "flex");
-}
-
-let asmaAllah = [
-    "الرحمن", "الرحيم", "الملك", "القدوس", "السلام", "المؤمن", "المهيمن",
-    "العزيز", "الجبار", "المتكبر", "الخالق", "البارئ", "المصور", "الغفار",
-    "القهار", "الوهاب", "الرزاق", "الفتاح", "العليم", "القابض", "الباسط",
-    "الخافض", "الرافع", "المعز", "المذل", "السميع", "البصير", "الحكم",
-    "العدل", "اللطيف", "الخبير", "الحليم", "العظيم", "الغفور", "الشكور",
-    "العلي", "الكبير", "الحفيظ", "المقيت", "الحسيب", "الجليل", "الكريم",
-    "الرقيب", "المجيب", "الواسع", "الحكيم", "الودود", "المجيد", "الباعث",
-    "الشهيد", "الحق", "الوكيل", "القوي", "المتين", "الولي", "الحميد",
-    "المحصي", "المبدئ", "المعيد", "المحيي", "المميت", "الحي", "القيوم",
-    "الواجد", "الماجد", "الواحد", "الصمد", "القادر", "المقتدر", "المقدم",
-    "المؤخر", "الأول", "الآخر", "الظاهر", "الباطن", "الوالي", "المتعالى",
-    "البر", "التواب", "المنتقم", "العفو", "الرؤوف", "مالك الملك",
-    "ذو الجلال والإكرام", "المقسط", "الجامع", "الغني", "المغني", "المانع",
-    "الضار", "النافع", "النور", "الهادي", "البديع", "الباقي", "الوارث",
-    "الرشيد", "الصبور"
-];
-function displayAsmaAllah() {
-    let html = "";
-    asmaAllah.forEach(name => {
-        html += `<span class="asma-item">${name}</span>`;
-    });
-    $("#asma-content").html(html);
-}
-
-const adviceData = {
-    prayer: { title: "كيف تنتظم في الصلاة؟", text: "الصلاة من أهم العبادات اللي لازم نلتزم بيها ولما بنلتزم بها حياتنا بتتغير للأفضل وهيا صلة الانسان برب العباد وعلشان تنتظم في الصلاة لازم تحاول تحدد أوقات ثابتة للصلاة في اليوم بمعني انك هتبدء تنظم يومك بحيث تعرف إنك هتصلي في الوقت المحدد وخليك مع المنبهات والتطبيقات اللي بتذكرك بمواعيد الصلاة علشان مفيش حاجة تشغلك عنها واعرف ان كل ما اتعودت على النظام ده هتلاقي الصلاة بقت جزء من يومك بشكل طبيعي." },
-    fajr: { title: "كيف تواظب على صلاة الفجر؟", text: "صلاة الفجر من أروع الصلوات وأكبر فرصة لربنا يفتح لنا أبواب الرزق والبركة فى بداية اليوم وعلشان تواظب عليها الزم نفسك إنك تنام بدري لأن النوم بدري بيساعدك تصحى في وقت الفجر واستخدم منبه ويفضل لو حطيت المنبه بعيد عن السرير عشان تضطر تقوم وتخلي عندك نية وتشغل ذهنك قبل ما تنام إنك هتصحى وتصلي الفجر عشان لما تعود نفسك على ده هتحس بتغيير كبير في حياتك." },
-    azkar: { title: "كيف تدوام على الأذكار اليومية؟", text: "الأذكار اليومية حاجة بسيطة بس مؤثرة جدًا في حياتنا عشان تكون دائمًا متذكر لله وممكن تحمل معاك كتاب الأذكار في شنطتك أو جيبك او حتي كصور وفي ناس كمان بيحبوا يستخدموا تطبيقات الأذكار على الموبايل علشان تقدر تذكر الله في أي وقت وفي أي مكان وخلي الأذكار عادة يومية زي شرب المياه ومع الوقت هتحس بتغيير وطمأنينة في حياتك." },
-    repentance: { title: "كيف تتوب إلى الله توبة نصوحة؟", text: "التوبة النصوحة هي التوبة الصادقة من القلب وعليها الالتزام ولها شروط علشان تكون مقبولة ان أول حاجة اعترف بذنوبك أمام الله واطلب المغفرة ولازم يكون عندك نية إنك مش هترجع للذنوب دي تاني وإنك هتبدأ صفحة جديدة مع ربنا وانك تاخد بالاسباب وتدور على صحبة صالحة لان التوبة مش بس بالكلام انما بالأفعال يعني تبعد عن الأسباب اللي بتخليك تقع في نفس المعاصي." },
-    quran: { title: "كيف تحفظ القرآن الكريم؟", text: "حفظ القرآن مش صعب لو نظمنا وقتنا صح وأول حاجة خصص وقت يومي ثابت للحفظ ولو حتى نص ساعة في اليوم وتكون في مكان هادي علشان تركز بعيدا عن المشتتات والصوت العالي وابتدي تحفظ جزء صغير كل يوم وتسمع تلاوات القرآن من شيوخ مختلفين علشان يثبت في قلبك ولما تحفظ جزء كرره كتير لحد ما يتثبت في عقلك وذهنك وهنا ما تيأس لو تعبت وافتكر إن الحفظ بالنية والمثابرة هتلاقي نفسك حفظت أجزاء كبيرة مع الوقت." },
-    wudu: { title: "إزاي تحافظ على وضوءك طول اليوم؟", text: "خلي معاك سبحة أو منبه يذكرك بالوضوء وكل ما ينقض وضوءك جَدّده على طول لأن الوضوء نور، وبيخليك دايمًا مستعد للصلاة" },
-    dailyQuran: { title: "إزاي تقرأ ورد يومي من القرآن؟", text: "حدد وقت معين بعد الفجر أو قبل النوم حتى لو صفحة واحدة بس المهم الاستمرارية ولو مشغول اسمع قرآن وأنت ماشي أو بتشتغل" },
-    goodDeeds: { title: "إزاي تخلي يومك مليان حسنات؟", text: "ابدأ يومك بنية صادقة ومخلصه لله سبحانه وتعالي وتخلي لسانك رطب بذكر الله ولو قدرت تساعد أي حد حتى بكلمة طيبة واحتسب كل حاجة عند ربنا" },
-    avoidSins: { title: "إزاي تتجنب المعاصي اللي بتتكرر منك؟", text: "الحل الاول والصح انك تعرف سببها وحاول تبعد عنه غير بيئتك لو بتساعدك على الغلط بس اشغل وقتك بحاجة مفيدة واستعن بالله وادعيله يثبتك" },
-    endDay: { title: "إزاي تختم يومك بذكر حسن؟", text: "نام على وضوء، واقرأ المعوذات وآية الكرسي، واستغفر لحد ما تنام، ولو عندك ذنب استغفر وتب لربنا بقلب صادق." },
-    cleanHeart: { title: "إزاي تحافظ على قلبك سليم ونظيف؟", text: "حاول تسامح الناس ومتشيلش غِل لحد وأكثر من الاستغفار وحط دايمًا حسن الظن في اللي حواليك" },
-    noProcrastination: { title: "إزاي تبعد عن التسويف في العبادات؟", text: "متستناش ان المزاج ييجي عشان تصلي أو تقرأ قرآن خدها عادة وإجبار نفسك على الخير هيعود عليك براحة قلب وسكينة" },
-    freeTime: { title: "إزاي تستغل وقت فراغك في حاجة تنفعك؟", text: "بدل ما تضيع وقتك في السوشيال ميديا بدون فايدة استغل وقتك في سماع درس ديني ولا قراءة قرآن أو حتى تعلم حاجة جديدة" },
-    strongerFaith: { title: "إزاي تقوّي علاقتك بربنا؟", text: "خليك قريب منه بالدعاء حتى في أبسط أمورك وكل ما تحس بضعف روح صلي ركعتين واشكي له" },
-    khushoo: { title: "إزاي تخلي صلاتك بخشوع؟", text: "فكر إنك واقف قدام رب العالمين واقرأ الفاتحة بتمهل ومتستعجلش في الركوع والسجود وادعي من قلبك" },
-    abandonSin: { title: "إزاي تسيب ذنب متعلق بيك بقاله سنين؟", text: "أول حاجة متيأسش من رحمة ربنا وقوي إرادتك وابعد عن كل حاجة بتوصلك للذنب خصوصا (الصحبة الغلط) واشتغل على نفسك" },
-    guardTongue: { title: "إزاي تحافظ على لسانك من الغيبة والنميمة؟", text: "لو لقيت نفسك داخل في كلام عن حد غير الموضوع عطول أو افتكر إن اللي بتقوله هيتحسب عليك ودايمًا خلي كلامك فيه خير" },
-    blessedHome: { title: "إزاي تخلي بيتك فيه بركة وراحة نفسية؟", text: "شغل قرآن باستمرار وحافظ على الصلاة فيه وابعد عن المعاصي وخليك دايمًا مبتسم وهادئ مع أهلك" },
-    friday: { title: "إزاي تستغل يوم الجمعة صح؟", text: "اغتسل بدري واقرأ سوره الكهف وأكثر من الصلاة على النبي ﷺ وادعي في آخر ساعة قبل المغرب لإنها ساعة استجابة" },
-    positiveStart: { title: "إزاي تبدأ يومك بطاقة إيجابية؟", text: "صلي الفجر واقرأ أذكار الصباح واحمد ربنا على النعم اللي عندك وابعد عن الأخبار السلبية أول ما تصحى" },
-    protectEnvy: { title: "إزاي تحمي نفسك من الحسد والعين؟", text: "حافظ على الأذكار ومتحكيش عن كل حاجة حلوة عندك لكل الناس ولو شفت حاجة تعجبك قول (ما شاء الله لا قوة إلا بالله)" },
-    contentment: { title: "إزاي تحس بالرضا في حياتك؟", text: "بصّ لنعم ربنا عليك وسيبك من مقارنة نفسك بغيرك ومتنساش إن كل حاجة بتحصل لحكمة حتى لو مش فاهمها دلوقتي" }
-};
-
-function showAdvice(key) {
-    const advice = adviceData[key];
-    $("#advice-title").html(advice.title);
-    $("#advice-text").html(advice.text);
-    $("#advice-list").hide();
-    $("#advice-content").show();
-}
-
-function backToAdviceList() {
-    $("#advice-content").hide();
-    $("#advice-list").show();
-}
-
-const hadiths = [
-    { text: "الكلمة الطيبة صدقة", reference: "صحيح البخاري" },
-    { text: "من كان يؤمن بالله واليوم الآخر فليقل خيرًا أو ليصمت", reference: "صحيح البخاري" },
-    { text: "تبسمك في وجه أخيك صدقة", reference: "صحيح مسلم" }
-];
-
-function loadHadith() {
-    const randomIndex = Math.floor(Math.random() * hadiths.length);
-    const hadith = hadiths[randomIndex];
-    $("#hadith-text").html(hadith.text);
-    $("#hadith-reference").html(`[${hadith.reference}]`);
-}
-
-const videos = [
-    { id: "5jGpjNu6seA", title: "قصة آدم عليه السلام" },
-    { id: "_CtwHiJnYkk", title: "قصة إدريس عليه السلام" },
-    { id: "LHDRo1o8Z3I", title: "قصة نوح عليه السلام الجزء الأول" },
-    { id: "ksg__AfTgVg", title: "قصة نوح عليه السلام الجزء الثاني" },
-    { id: "jH9xvvffB5o", title: "قصة هود عليه السلام" },
-    { id: "VOEXU0suTMo", title: "قصة صالح عليه السلام" },
-    { id: "H5t9ugFROvQ", title: "قصة إبراهيم عليه السلام الجزء الأول" },
-    { id: "kKKAVtiaxdU", title: "قصة إبراهيم عليه السلام الجزء الثاني" },
-    { id: "v_p-YK6ItqQ", title: "قصة إبراهيم عليه السلام الجزء الثالث" },
-    { id: "zETPemfAzXA", title: "قصة لوط عليه السلام" },
-    { id: "plfgl11XmFY", title: "قصة إسماعيل عليه السلام" },
-    { id: "dtmBUp2zLu4", title: "قصة إسحاق عليه السلام" },
-    { id: "yRBgCL9frWY", title: "قصة يعقوب عليه السلام" },
-    { id: "S93Oqwvumw0", title: "قصة يوسف عليه السلام الجزء الأول" },
-    { id: "Zoadcu3Ln_0", title: "قصة يوسف عليه السلام الجزء الثاني" },
-    { id: "xWUbKvTYtuI", title: "قصة يوسف عليه السلام الجزء الثالث" },
-    { id: "onudakV-4b4", title: "قصة شعيب عليه السلام" },
-    { id: "dhJuEpCfnWw", title: "قصة أيوب عليه السلام" },
-    { id: "73Egv37giAc", title: "قصة ذو الكفل عليه السلام" },
-    { id: "yPVpe2g_ROY", title: "قصة يونس عليه السلام" },
-    { id: "vt149FD7Oio", title: "قصة موسى عليه السلام الجزء الأول" },
-];
-
-function loadStories() {
-    let html = "";
-    videos.forEach(video => {
-        html += `
-            <iframe
-                src="https://www.youtube.com/embed/${video.id}"
-                title="${video.title}"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
-            </iframe>
-        `;
-    });
-    $("#stories-grid").html(html);
-}
-
-let lists = [
-    { ayahnum: 6, souranum: 1, name: "الفاتحة" },
-    { ayahnum: 127, souranum: 2, name: "البقرة" },
-    { ayahnum: 201, souranum: 2, name: "البقرة" },
-    { ayahnum: 250, souranum: 2, name: "البقرة" },
-    { ayahnum: 286, souranum: 2, name: "البقرة" },
-    { ayahnum: 8, souranum: 3, name: "آل عمران" },
-    { ayahnum: 16, souranum: 3, name: "آل عمران" },
-    { ayahnum: 38, souranum: 3, name: "آل عمران" },
-    { ayahnum: 53, souranum: 3, name: "آل عمران" },
-    { ayahnum: 147, souranum: 3, name: "آل عمران" }
-];
-
-function loadDuaaQuran() {
-    const content = $("#duaa-quran .content");
-    const souraNameSpan = $("#duaa-quran .soura_name");
-    const ayahNumSpan = $("#duaa-quran .ayah_num");
-    const leftBtn = $("#duaa-quran #left-btn");
-    const rightBtn = $("#duaa-quran #right-btn");
-    const audioBtn = $("#duaa-quran #audioBtn");
-    const audio = $("#duaa-quran #myAudio")[0];
-
-    let index = 0;
-    let ayahs = [];
-    let ayahSrc = [];
-    let isPlaying = false;
-
-    const fetchAllAyahs = async () => {
-        try {
-            for (let i = 0; i < lists.length; i++) {
-                const response = await fetch(
-                    `https://api.alquran.cloud/v1/ayah/${lists[i].souranum}:${lists[i].ayahnum}/ar.alafasy`
-                );
-                const data = await response.json();
-                ayahs.push(data.data.text);
-                ayahSrc.push(data.data.audio);
-            }
-            displayAyah();
-        } catch (error) {
-            showError("حدث خطأ أثناء جلب الأدعية من القرآن. تأكد من الاتصال بالإنترنت.");
-            console.error(error);
-        }
+    window.backToResults = function () {
+        $("#quranContent").hide();
+        $("#quranResults").show();
     };
 
-    const displayAyah = () => {
-        if (ayahs.length > 0) {
-            content.html(ayahs[index]);
-            souraNameSpan.html(`سورة ${lists[index].name}`);
-            ayahNumSpan.html(`آية (${lists[index].ayahnum})`);
-            audio.src = ayahSrc[index];
-            leftBtn.css("opacity", index > 0 ? 1 : 0.5);
-            rightBtn.css("opacity", index < lists.length - 1 ? 1 : 0.5);
-        } else {
-            content.html("جاري التحميل...");
-        }
+    // Azkar Section
+    let currentZikrIndex = {
+        "azkar-sabah": 0,
+        "azkar-masaa": 0,
+        "azkar-nawm": 0
     };
 
-    leftBtn.off("click").on("click", () => {
-        if (index > 0) {
-            index--;
-            audio.pause();
-            isPlaying = false;
-            audioBtn.html('<i class="fas fa-play"></i>');
-            displayAyah();
-        }
-    });
-
-    rightBtn.off("click").on("click", () => {
-        if (index < lists.length - 1) {
-            index++;
-            audio.pause();
-            isPlaying = false;
-            audioBtn.html('<i class="fas fa-play"></i>');
-            displayAyah();
-        }
-    });
-
-    audioBtn.off("click").on("click", () => {
-        if (isPlaying) {
-            audio.pause();
-            isPlaying = false;
-            audioBtn.html('<i class="fas fa-play"></i>');
-        } else {
-            audio.play().catch(() => showError("تعذر تشغيل الصوت. تأكد من الاتصال."));
-            isPlaying = true;
-            audioBtn.html('<i class="fas fa-pause"></i>');
-        }
-    });
-
-    audio.onended = () => {
-        isPlaying = false;
-        audioBtn.html('<i class="fas fa-play"></i>');
-    };
-
-    fetchAllAyahs();
-}
-
-async function loadHijriDate() {
-    $("#hijri-date").html("جاري تحميل التاريخ الهجري...");
-    try {
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const year = today.getFullYear();
-        const formattedDate = `${day}-${month}-${year}`;
-        const response = await fetch(`https://api.aladhan.com/v1/gToH?date=${formattedDate}`);
-        const data = await response.json();
-        if (data.code === 200) {
-            const hijri = data.data.hijri;
-            $("#hijri-date").html(`<p>اليوم: ${hijri.weekday.ar} ${hijri.day} ${hijri.month.ar} ${hijri.year} هـ</p>`);
-        } else {
-            showError("خطأ في استجابة الـ API للتاريخ الهجري.");
-        }
-    } catch (error) {
-        showError("حدث خطأ أثناء جلب التاريخ الهجري. تأكد من الاتصال بالإنترنت.");
+    function selectAzkarSection(section) {
+        $(".azkar-section").hide();
+        $(`#${section}`).show();
+        updateAzkarDisplay(section);
     }
-}
 
-function loadAudioQuran() {
-    const readers = [
-        "الشيخ مشاري العفاسي", "الشيخ عبد الباسط", "الشيخ السديس",
-        "الشيخ ماهر المعيقلي", "الشيخ ياسر الدوسري", "الشيخ الحصري", "الشيخ المنشاوي",
-        "الشيخ سعود الشريم", "الشيخ أحمد العجمي", "الشيخ ناصر القطامي", "الشيخ إدريس أبكر",
-        "الشيخ عبد الرحمن السديس", "الشيخ خالد الجليل",
-        "الشيخ فارس عباد",
+    function updateAzkarDisplay(section) {
+        let items = $(`#${section} .azkar-item`);
+        items.hide();
+        items.eq(currentZikrIndex[section]).show();
+        $(`#${section} .azkar-navigation button`).prop("disabled", false);
+        if (currentZikrIndex[section] === 0) {
+            $(`#${section} .azkar-navigation button:contains('السابق')`).prop("disabled", true);
+        }
+        if (currentZikrIndex[section] === items.length - 1) {
+            $(`#${section} .azkar-navigation button:contains('التالي')`).prop("disabled", true);
+        }
+    }
+
+    window.selectAzkarSection = selectAzkarSection;
+
+    window.nextZikr = function (section) {
+        let items = $(`#${section} .azkar-item`);
+        if (currentZikrIndex[section] < items.length - 1) {
+            currentZikrIndex[section]++;
+            updateAzkarDisplay(section);
+        }
+    };
+
+    window.prevZikr = function (section) {
+        if (currentZikrIndex[section] > 0) {
+            currentZikrIndex[section]--;
+            updateAzkarDisplay(section);
+        }
+    };
+
+    $("#azkarGalleryBtn").click(function () {
+        $("#galleryImages").html(`
+            <img src="1.jpg" alt="Azkar Image 1" />
+            <img src="2.jpg" alt="Azkar Image 2" />
+            <img src="3.jpg" alt="Azkar Image 3" />
+        `);
+        $("#galleryModal").fadeIn();
+    });
+
+    $(".close-gallery, .close-image").click(function () {
+        $("#galleryModal, #imageModal").fadeOut();
+    });
+
+    $(document).on("click", "#galleryImages img", function () {
+        let src = $(this).attr("src");
+        $("#largeImage").attr("src", src);
+        $("#downloadLink").attr("href", src);
+        $("#imageModal").fadeIn();
+    });
+
+    $("#moreAzkarDesignsBtn").click(function () {
+        window.open("https://www.pinterest.com/search/pins/?q=azkar%20designs", "_blank");
+    });
+
+    // Questions Section
+    const questions = [
+        { question: "من هو أول نبي؟", answer: "آدم عليه السلام" },
+        { question: "كم عدد أنبياء الله؟", answer: "124,000" },
+        { question: "ما هي أول سورة نزلت في القرآن؟", answer: "سورة العلق" },
+        { question: "من هو خاتم الأنبياء؟", answer: "محمد صلى الله عليه وسلم" },
+        { question: "ما هي السورة التي تسمى قلب القرآن؟", answer: "سورة يس" },
+    ];
+    let currentQuestionIndex = 0;
+
+    function showQuestion() {
+        $("#questions-content").html(`
+            <p>${questions[currentQuestionIndex].question}</p>
+            <p>الإجابة: ${questions[currentQuestionIndex].answer}</p>
+        `);
+    }
+    showQuestion();
+
+    window.nextQuestion = function () {
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+        showQuestion();
+    };
+    window.prevQuestion = function () {
+        currentQuestionIndex = (currentQuestionIndex - 1 + questions.length) % questions.length;
+        showQuestion();
+    };
+
+    // Asma Allah Section
+    const asmaAllah = [
+        "الرحمن", "الرحيم", "الملك", "القدوس", "السلام", "المؤمن",
+        "المهيمن", "العزيز", "الجبار", "المتكبر", "الخالق", "البارئ",
+        "المصور", "الغفار", "القهار", "الوهاب", "الرزاق", "الفتاح",
+        "العليم", "القابض", "الباسط", "الخافض", "الرافع", "المعز",
+        "المذل", "السميع", "البصير", "الحكم", "العدل", "اللطيف",
+        "الخبير", "الحليم", "العظيم", "الغفور", "الشكور", "العلي",
+        "الكبير", "الحفيظ", "المقيت", "الحسيب", "الجليل", "الكريم",
+        "الرقيب", "المجيب", "الواسع", "الحكيم", "الودود", "المجيد",
+        "الباعث", "الشهيد", "الحق", "الوكيل", "القوي", "المتين",
+        "الولي", "الحميد", "المحصي", "المبدئ", "المعيد", "المحيي",
+        "المميت", "الحي", "القيوم", "الواجد", "الماجد", "الواحد",
+        "الأحد", "الصمد", "القادر", "المقتدر", "المقدم", "المؤخر",
+        "الأول", "الآخر", "الظاهر", "الباطن", "الوالي", "المتعالي",
+        "البر", "التواب", "المنتقم", "العفو", "الرؤوف", "مالك الملك",
+        "ذو الجلال والإكرام", "المقسط", "الجامع", "الغني", "المغني",
+        "المانع", "الضار", "النافع", "النور", "الهادي", "البديع",
+        "الباقي", "الوارث", "الرشيد", "الصبور"
     ];
 
-    const audioLinks = [
-        "https://archive.org/download/fm_002_20150413_0654/fm_002_20150413_0654_vbr_mp3.zip", // مشاري العفاسي
-        "https://ia903100.us.archive.org/30/items/ABDEL-BASIT.ABDEL-SAMAD.MUJAWAD.FULL.HQ.BY-MAHMOUD-ZIED/ABDEL-BASIT.ABDEL-SAMAD.MUJAWAD.FULL.HQ.BY-MAHMOUD-ZIED_vbr_mp3.zip", // عبد الباسط
-        "https://ia800102.us.archive.org/34/items/sudais_2/sudais_2_vbr_mp3.zip", // السديس
-        "https://ia601602.us.archive.org/5/items/koonoz_blogspot_com_Maher/koonoz_blogspot_com_Maher_vbr_mp3.zip", // ماهر المعيقلي
-        "https://ia902900.us.archive.org/3/items/dos_6/dos_6_vbr_mp3.zip", // ياسر الدوسري
-        "https://ia600409.us.archive.org/3/items/Al-Quran_tilawat_Mahmoud_Al-Hosary/Al-Quran_tilawat_Mahmoud_Al-Hosary_vbr_mp3.zip", // الحصري
-        "https://ia801307.us.archive.org/3/items/Al-Minshawy_Muratal_Quran/Al-Minshawy_Muratal_Quran_vbr_mp3.zip", // المنشاوي
-        "https://ia802900.us.archive.org/1/items/Saud-Al-Shuraim/Saud-Al-Shuraim_vbr_mp3.zip", // الشريم
-        "https://ia801901.us.archive.org/29/items/jam3_11/jam3_11_vbr_mp3.zip", // أحمد العجمي
-        "https://ia800906.us.archive.org/20/items/96--kb---naser--alqetamy--mp3--full--mushaf--quran--114--sora---from-islamhous/96--kb---naser--alqetamy--mp3--full--mushaf--quran--114--sora---from-islamhous_vbr_mp3.zip", // ناصر القطامي
-        "https://ia600200.us.archive.org/12/items/quraan_idrees-abkar.co.cc/quraan_idrees-abkar.co.cc_vbr_mp3.zip", // إدريس أبكر
-        "https://ia803200.us.archive.org/18/items/Khalid_aljalil_mp3/Khalid_aljalil_mp3_vbr_mp3.zip", // خالد الجليل
-        "https://ia801404.us.archive.org/16/items/jam3_40/jam3_40_vbr_mp3.zip", // فارس عباد
+    function loadAsmaAllah() {
+        $("#asma-content").empty();
+        asmaAllah.forEach(name => {
+            $("#asma-content").append(`<div class="asma-item">${name}</div>`);
+        });
+    }
+    loadAsmaAllah();
+
+    // Advice Section
+    const adviceData = {
+        prayer: {
+            title: "كيف تنتظم في الصلاة؟",
+            text: "حدد أوقاتًا ثابتة للصلاة يوميًا، واستخدم التذكيرات إذا لزم الأمر. حاول أن تصلي في جماعة قدر الإمكان، واجعل الصلاة جزءًا من روتينك اليومي."
+        },
+        fajr: {
+            title: "كيف تواظب على صلاة الفجر؟",
+            text: "حاول النوم مبكرًا، واضبط منبهًا بعيدًا عن سريرك، وكافئ نفسك بعد الصلاة بشيء تحبه مثل فنجان قهوة."
+        },
+        azkar: {
+            title: "كيف تدوام على الأذكار اليومية؟",
+            text: "خصص وقتًا محددًا للأذكار صباحًا ومساءً، واستخدم تطبيقًا مثل آيات لتذكيرك، وحاول ربط الأذكار بروتين يومي مثل بعد الصلاة."
+        },
+        repentance: {
+            title: "كيف تتوب إلى الله توبة نصوحة؟",
+            text: "أخلص النية، واستغفر الله بصدق، وتجنب المعاصي قدر الإمكان، وأكثر من الأعمال الصالحة."
+        },
+        quran: {
+            title: "كيف تحفظ القرآن الكريم؟",
+            text: "ابدأ بحفظ جزء صغير يوميًا، وكرره باستمرار، واستمع لتلاوة القرآن من قارئ مفضل، وادعُ الله أن ييسر لك الحفظ."
+        },
+        wudu: {
+            title: "إزاي تحافظ على وضوءك طول اليوم؟",
+            text: "جدد وضوءك بعد كل صلاة، وحاول البقاء على طهارة قدر الإمكان، واعتبر الوضوء وسيلة للانتعاش الروحي."
+        },
+        dailyQuran: {
+            title: "إزاي تقرأ ورد يومي من القرآن؟",
+            text: "خصص وقتًا يوميًا ثابتًا للقراءة، ولو 10 دقايق بعد صلاة الفجر، واستخدم تطبيق زي آيات عشان تتابع تقدمك."
+        },
+        goodDeeds: {
+            title: "إزاي تخلي يومك مليان حسنات؟",
+            text: "أكثر من الذكر في أي وقت، ساعد غيرك حتى لو بشيء بسيط، وابتسم في وجه الناس، لأن الابتسامة صدقة."
+        },
+        avoidSins: {
+            title: "إزاي تتجنب المعاصي اللي بتتكرر منك؟",
+            text: "حدد المواقف اللي بتوقعك في الذنب، وابعد عنها، وأكثر من الدعاء بأن الله يقويك، واشغل وقتك بحاجة نافعة."
+        },
+        endDay: {
+            title: "إزاي تختم يومك بذكر حسن؟",
+            text: "قبل النوم، اقرأ أذكار النوم، واستغفر الله 100 مرة، وحاول تفكر في يومك وتشكر الله على نعمه."
+        },
+        cleanHeart: {
+            title: "إزاي تحافظ على قلبك سليم ونظيف؟",
+            text: "ابعد عن الحقد والحسد، وأكثر من الاستغفار، وحاول تسامح الناس حتى لو ظلموك."
+        },
+        noProcrastination: {
+            title: "إزاي تبعد عن التسويف في العبادات؟",
+            text: "خلّي شعارك: اللي أقدر أعمله دلوقتي، ما أأجلوش. وابدأ بخطوات صغيرة، زي صلاة ركعتين قبل ما تشتت."
+        },
+        freeTime: {
+            title: "إزاي تستغل وقت فراغك في حاجة تنفعك؟",
+            text: "اقرأ كتاب ديني، أو اسمع بودكاست مفيد، أو حتى ساعد أهلك في البيت، وابعد عن السوشيال ميديا لو مش هتستفيد."
+        },
+        strongerFaith: {
+            title: "إزاي تقوّي علاقتك بربنا؟",
+            text: "أكثر من الدعاء والتفكر في خلق الله، وحاول تقرأ في سيرة النبي صلى الله عليه وسلم، وخلّي ليك ورد يومي من القرآن."
+        },
+        khushoo: {
+            title: "إزاي تخلي صلاتك بخشوع؟",
+            text: "ركز في معاني الكلام اللي بتقوله في الصلاة، وتخيل إنك واقف قدام ربنا، وابعد عن أي مشتتات زي الموبايل."
+        },
+        abandonSin: {
+            title: "إزاي تسيب ذنب متعلق بيك بقاله سنين؟",
+            text: "أخلص النية إنك عايز تتغير، واستعين بالله، وابحث عن بديل إيجابي للذنب ده، زي إنك تشغل وقتك بقراءة القرآن."
+        },
+        guardTongue: {
+            title: "إزاي تحافظ على لسانك من الغيبة والنميمة؟",
+            text: "قبل ما تتكلم، اسأل نفسك: لو الشخص قدامي، هقول الكلام ده؟ وأكثر من ذكر الله عشان لسانك يفضل مشغول بالخير."
+        },
+        blessedHome: {
+            title: "إزاي تخلي بيتك فيه بركة وراحة نفسية؟",
+            text: "أكثر من قراءة سورة البقرة في البيت، وحافظ على النظافة، وخلّي الأذكار دايمًا موجودة في يومك."
+        },
+        friday: {
+            title: "إزاي تستغل يوم الجمعة صح؟",
+            text: "اقرأ سورة الكهف، وأكثر من الصلاة على النبي، وحاول تحضر خطبة الجمعة وتستغل الساعة اللي فيها إجابة للدعاء."
+        },
+        positiveStart: {
+            title: "إزاي تبدأ يومك بطاقة إيجابية؟",
+            text: "صلّي الفجر في وقتها، اقرأ أذكار الصباح، واشكر ربنا على نعمة إنك صحيت النهاردة."
+        },
+        protectEnvy: {
+            title: "إزاي تحمي نفسك من الحسد والعين؟",
+            text: "أكثر من قراءة المعوذتين وآية الكرسي، وحافظ على أذكار الصباح والمساء، وما تعلنش كل نعمك على السوشيال."
+        },
+        contentment: {
+            title: "إزاي تحس بالرضا في حياتك؟",
+            text: "فكّر في النعم اللي عندك واشكر ربنا عليها، وابعد عن مقارنة نفسك بغيرك، وادعي دايمًا بالخير."
+        }
+    };
+
+    let currentAdviceKey = "";
+    window.showAdvice = function (key) {
+        currentAdviceKey = key;
+        $("#advice-title").text(adviceData[key].title);
+        $("#advice-text").text(adviceData[key].text);
+        $("#advice-list").hide();
+        $("#advice-content").show();
+    };
+    window.backToAdviceList = function () {
+        $("#advice-content").hide();
+        $("#advice-list").show();
+    };
+
+    // Hadith Section
+    window.loadHadith = function () {
+        $.getJSON("https://api.hadith.gading.dev/books/muslim/random", function (data) {
+            $("#hadith-text").text(data.data.hadith.text);
+            $("#hadith-reference").text(data.data.book + " - " + data.data.number);
+        }).fail(function () {
+            showError("حدث خطأ أثناء جلب الحديث");
+        });
+    };
+    loadHadith();
+
+    // Stories Section
+    const stories = [
+        { title: "قصة آدم عليه السلام", videoId: "dQw4w9WgXcQ" },
+        { title: "قصة نوح عليه السلام", videoId: "e4q6eaLn2mY" },
+        { title: "قصة إبراهيم عليه السلام", videoId: "yXzM2zQ3a0w" },
+        { title: "قصة يوسف عليه السلام", videoId: "placeholder4" },
+        { title: "قصة موسى عليه السلام", videoId: "placeholder5" },
+        { title: "قصة عيسى عليه السلام", videoId: "placeholder6" },
+        { title: "قصة محمد صلى الله عليه وسلم", videoId: "placeholder7" },
+        { title: "قصة هود عليه السلام", videoId: "placeholder8" },
+        { title: "قصة صالح عليه السلام", videoId: "placeholder9" },
+        { title: "قصة لوط عليه السلام", videoId: "placeholder10" },
+        { title: "قصة شعيب عليه السلام", videoId: "placeholder11" },
+        { title: "قصة إسماعيل عليه السلام", videoId: "placeholder12" },
+        { title: "قصة إسحاق عليه السلام", videoId: "placeholder13" },
+        { title: "قصة يعقوب عليه السلام", videoId: "placeholder14" },
+        { title: "قصة أيوب عليه السلام", videoId: "placeholder15" },
+        { title: "قصة ذو الكفل عليه السلام", videoId: "placeholder16" },
+        { title: "قصة يونس عليه السلام", videoId: "placeholder17" },
+        { title: "قصة زكريا عليه السلام", videoId: "placeholder18" },
+        { title: "قصة يحيى عليه السلام", videoId: "placeholder19" },
+        { title: "قصة الياس عليه السلام", videoId: "placeholder20" },
+        { title: "قصة إدريس عليه السلام", videoId: "placeholder21" }
     ];
 
-    let html = "";
-    for (let i = 0; i < 13; i++) {
-        html += `
-            <div class="audio-item">
-                <p>${readers[i]}</p>
-                <button onclick="downloadAudio('${audioLinks[i]}')">تحميل الآن</button>
-            </div>
-        `;
+    function loadStories() {
+        $("#stories-grid").empty();
+        stories.forEach(story => {
+            $("#stories-grid").append(`
+                <div>
+                    <iframe src="https://www.youtube.com/embed/${story.videoId}" title="${story.title}"></iframe>
+                    <p>${story.title}</p>
+                </div>
+            `);
+        });
     }
-    $("#audio-grid").html(html);
+    loadStories();
 
-    $("#download-all-audio").click(function() {
-        window.open("YOUR_FULL_AUDIO_LINK_HERE", "_blank");
-    });
-}
+    // Podcasts Section
+    const podcasts = [
+        { title: "بودكاست ديني 1", videoId: "dQw4w9WgXcQ" },
+        { title: "بودكاست ديني 2", videoId: "e4q6eaLn2mY" },
+        { title: "بودكاست ديني 3", videoId: "yXzM2zQ3a0w" },
+        { title: "بودكاست ديني 4", videoId: "placeholder4" },
+        { title: "بودكاست ديني 5", videoId: "placeholder5" },
+        { title: "بودكاست ديني 6", videoId: "placeholder6" },
+        { title: "بودكاست ديني 7", videoId: "placeholder7" },
+        { title: "بودكاست ديني 8", videoId: "placeholder8" },
+        { title: "بودكاست ديني 9", videoId: "placeholder9" },
+        { title: "بودكاست ديني 10", videoId: "placeholder10" }
+    ];
 
-function downloadAudio(link) {
-    window.open(link, "_blank");
-}
+    function loadPodcasts() {
+        $("#podcasts-grid").empty();
+        podcasts.forEach(podcast => {
+            $("#podcasts-grid").append(`
+                <div>
+                    <iframe src="https://www.youtube.com/embed/${podcast.videoId}" title="${podcast.title}"></iframe>
+                    <p>${podcast.title}</p>
+                </div>
+            `);
+        });
+    }
+    loadPodcasts();
 
-function loadPropheticDuas() {
+    // Duaa Quran Section
     const duas = [
-        { text: "اللهم افتح لي أبواب رحمتك", source: "صحيح مسلم، حديث 713" },
-        { text: "اللهم إني أسألك الهدى والتقى والعفاف والغنى", source: "صحيح مسلم، حديث 2721" },
-        { text: "اللهم اغفر لي ذنبي كله، دقه وجله، وأوله وآخره، علانيته وسره", source: "صحيح مسلم، حديث 483" },
-        { text: "اللهم إني أعوذ بك من العجز والكسل وضعف الهمة", source: "صحيح البخاري، حديث 6363" },
-        { text: "اللهم اجعل في قلبي نورًا، وفي بصري نورًا، وفي سمعي نورًا", source: "صحيح البخاري، حديث 6316" },
-        { text: "اللهم ارزقني حبك وحب من يحبك وحب كل عمل يقربني إليك", source: "سنن الترمذي، حديث 3490 (حسن)" },
-        { text: "اللهم قني عذابك يوم تبعث عبادك", source: "صحيح مسلم، حديث 709" },
-        { text: "اللهم إني أعوذ بك من زوال نعمتك وتحول عافيتك وفجاءة نقمتك وجميع سخطك", source: "صحيح مسلم، حديث 2739" },
-        { text: "اللهم اهدني وسددني", source: "صحيح مسلم، حديث 2725" },
-        { text: "اللهم إني أسألك العفو والعافية في الدنيا والآخرة", source: "سنن ابن ماجه، حديث 3871 (صحيح)" }
+        { content: "ربنا تقبل منا إنك أنت السميع العليم، وتب علينا إنك أنت التواب الرحيم." },
+        { content: "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار." },
+        { content: "ربنا أفرغ علينا صبرا وثبت أقدامنا وانصرنا على القوم الكافرين." },
+        { content: "ربنا لا تؤاخذنا إن نسينا أو أخطأنا، ربنا ولا تحمل علينا إصرا كما حملته على الذين من قبلنا." },
+        { content: "ربنا ولا تحملنا ما لا طاقة لنا به واعف عنا واغفر لنا وارحمنا أنت مولانا فانصرنا على القوم الكافرين." },
+        { content: "ربنا لا تزغ قلوبنا بعد إذ هديتنا وهب لنا من لدنك رحمة إنك أنت الوهاب." },
+        { content: "ربنا إنك جامع الناس ليوم لا ريب فيه إن الله لا يخلف الميعاد." },
+        { content: "رب هب لي من لدنك ذرية طيبة إنك سميع الدعاء." },
+        { content: "ربنا آمنا بما أنزلت واتبعنا الرسول فاكتبنا مع الشاهدين." },
+        { content: "ربنا اغفر لنا ذنوبنا وإسرافنا في أمرنا وثبت أقدامنا وانصرنا على القوم الكافرين." }
     ];
 
-    let html = "";
-    duas.forEach(dua => {
-        html += `
-            <div class="dua-item">
-                <p class="dua-text">${dua.text}</p>
-                <p class="dua-source">[${dua.source}]</p>
-                <button onclick="navigator.clipboard.writeText('${dua.text}')">نسخ الدعاء</button>
+    let currentDuaIndex = 0;
+
+    function updateDua() {
+        $(".duaa-items").empty();
+        $(".duaa-items").append(`
+            <div class="duaa-item">
+                <p>${duas[currentDuaIndex].content}</p>
+                <button onclick="addToFavorites('duaa-quran', '${duas[currentDuaIndex].content}')">إضافة للمفضلة</button>
             </div>
-        `;
-    });
-    $("#duas-list").html(html);
-}
+        `);
+        $(".duaa-navigation button:contains('السابق')").prop("disabled", currentDuaIndex === 0);
+        $(".duaa-navigation button:contains('التالي')").prop("disabled", currentDuaIndex === duas.length - 1);
+        updateStats("duaa", parseInt(localStorage.getItem("duaaCount") || "0") + 1);
+    }
+
+    window.nextDuaa = function () {
+        if (currentDuaIndex < duas.length - 1) {
+            currentDuaIndex++;
+            updateDua();
+        }
+    };
+
+    window.prevDuaa = function () {
+        if (currentDuaIndex > 0) {
+            currentDuaIndex--;
+            updateDua();
+        }
+    };
+
+    updateDua();
+
+    // Hijri Calendar Section
+    function loadHijriDate() {
+        $.getJSON("https://api.aladhan.com/v1/gToH", function (data) {
+            let hijriDate = data.data.hijri;
+            let gregorianDate = data.data.gregorian;
+            let events = getReligiousEvents(hijriDate.month.number, hijriDate.day);
+            $("#hijri-table-body").html(`
+                <tr>
+                    <td>${hijriDate.day} ${hijriDate.month.ar} ${hijriDate.year}</td>
+                    <td>${gregorianDate.day} ${gregorianDate.month.en} ${gregorianDate.year}</td>
+                    <td>${hijriDate.weekday.ar}</td>
+                    <td>${events || "لا توجد أحداث"}</td>
+                </tr>
+            `);
+        }).fail(function () {
+            showError("حدث خطأ أثناء جلب التاريخ الهجري");
+        });
+    }
+
+    function getReligiousEvents(month, day) {
+        const events = {
+            "1": { "10": "يوم عاشوراء" },
+            "9": { "1": "بداية شهر رمضان" },
+            "10": { "1": "عيد الفطر" },
+            "12": { "10": "عيد الأضحى" }
+        };
+        return events[month] && events[month][day] ? events[month][day] : "";
+    }
+
+    loadHijriDate();
+
+    // Audio Quran Section
+    window.downloadAudio = function (sheikhId) {
+        // Placeholder function until actual URLs are provided
+        alert(`جاري تحميل تلاوة الشيخ ${sheikhId}... (سيتم إضافة الرابط لاحقًا)`);
+    };
+
+    // Prophetic Duas Section
+    const propheticDuas = [
+        { text: "اللهم اغفر لي ذنبي كله، دقه وجله، وأوله وآخره، وعلانيته وسره.", source: "صحيح مسلم" },
+        { text: "اللهم إني أعوذ بك من الهم والحزن، والعجز والكسل.", source: "صحيح البخاري" },
+        { text: "اللهم اجعل في قلبي نورا، وفي بصري نورا، وفي سمعي نورا.", source: "صحيح البخاري" },
+        { text: "اللهم إني أسألك علما نافعا، ورزقا طيبا، وعملا متقبلا.", source: "سنن ابن ماجه" },
+        { text: "اللهم إني أعوذ بك من زوال نعمتك، وتحول عافيتك، وفجاءة نقمتك، وجميع سخطك.", source: "صحيح مسلم" }
+    ];
+
+    function loadPropheticDuas() {
+        $("#duas-list").empty();
+        propheticDuas.forEach(dua => {
+            $("#duas-list").append(`
+                <div class="dua-item">
+                    <p class="dua-text">${dua.text}</p>
+                    <p class="dua-source">${dua.source}</p>
+                    <button onclick="addToFavorites('prophetic-duas', '${dua.text} [${dua.source}]')">إضافة للمفضلة</button>
+                </div>
+            `);
+        });
+    }
+    loadPropheticDuas();
+
+    // Stats Section
+    function updateStats(type, value) {
+        localStorage.setItem(type + "Count", value);
+        $("#stats-" + type).text(value);
+    }
+
+    function loadStats() {
+        updateStats("tasbe7", localStorage.getItem("tasbe7Count") || "0");
+        updateStats("quran", localStorage.getItem("quranCount") || "0");
+        updateStats("duaa", localStorage.getItem("duaaCount") || "0");
+    }
+    loadStats();
+
+    // Challenges Section
+    const challenges = [
+        { id: "tasbe7-100", title: "التسبيح 100 مرة", reward: "100 حسنة" },
+        { id: "quran-page", title: "قراءة صفحة من القرآن", reward: "حسنة لكل حرف" },
+        { id: "dua-daily", title: "الدعاء اليومي", reward: "قربة إلى الله" },
+    ];
+
+    function loadChallenges() {
+        $("#challenges-list").empty();
+        challenges.forEach(challenge => {
+            let completed = localStorage.getItem("challenge-" + challenge.id) === "true";
+            $("#challenges-list").append(`
+                <div class="challenge-item ${completed ? 'completed' : ''}">
+                    <span>${challenge.title} (${challenge.reward})</span>
+                    <button onclick="completeChallenge('${challenge.id}')">${completed ? 'مكتمل' : 'إكمال'}</button>
+                </div>
+            `);
+        });
+    }
+    loadChallenges();
+
+    window.completeChallenge = function (id) {
+        localStorage.setItem("challenge-" + id, "true");
+        loadChallenges();
+    };
+
+    // Favorites Section
+    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    function loadFavorites() {
+        $("#favorites-list").empty();
+        favorites.forEach((item, index) => {
+            $("#favorites-list").append(`
+                <div class="favorite-item">
+                    <p>${item.content} (${item.type})</p>
+                    <button onclick="removeFromFavorites(${index})">إزالة</button>
+                </div>
+            `);
+        });
+    }
+    loadFavorites();
+
+    window.addToFavorites = function (type, content) {
+        favorites.push({ type, content });
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        loadFavorites();
+    };
+
+    window.removeFromFavorites = function (index) {
+        favorites.splice(index, 1);
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        loadFavorites();
+    };
+
+    // Error Modal
+    function showError(message) {
+        $("#error-message").text(message);
+        $("#error-modal").fadeIn();
+        setTimeout(function () {
+            $("#error-modal").fadeOut();
+        }, 3000);
+    }
+
+    // Open Tab
+    window.openTab = function (tabName) {
+        $(".tab-content").hide();
+        $("#" + tabName).show();
+        $(".tab").css("background-color", "#692079");
+        $(`.tab[onclick="openTab('${tabName}')"]`).css("background-color", "#5a1a6a");
+    };
+    openTab("tasbe7");
+});

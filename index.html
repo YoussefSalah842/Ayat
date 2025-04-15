@@ -1,15 +1,67 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>تطبيق آيات</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Cairo:wght@400;700&family=Amiri:wght@400;700&family=Amiri+Quran&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="dark-mode-toggle">
-        <i class="fas fa-sun"></i>
+    <!-- App Banner from Broken Project -->
+    <div id="app-banner">
+        <div class="banner-content">
+            <h1>تطبيق آيات</h1>
+            <p>رفيقك اليومي للتقرب إلى الله</p>
+        </div>
+        <div class="banner-actions">
+            <div id="settings-toggle" class="action-btn">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div id="dark-mode-toggle" class="action-btn">
+                <i class="fas fa-moon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <img src="logo.png" alt="شعار تطبيق آيات" class="loading-logo" />
+        <p class="loading-text">تطبيق آيات الإصدار الثالث</p>
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h2>إعدادات الموقع</h2>
+            <div class="settings-option">
+                <label for="font-select">اختر خط الموقع:</label>
+                <select id="font-select">
+                    <option value="Tajawal">Tajawal (الافتراضي)</option>
+                    <option value="Cairo">Cairo</option>
+                    <option value="Amiri">Amiri</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <label for="bg-color-select">اختر لون الخلفية:</label>
+                <select id="bg-color-select">
+                    <option value="#f4f4f4">أبيض (الافتراضي)</option>
+                    <option value="#f5f5dc">بيج فاتح</option>
+                    <option value="#e0e0e0">رمادي فاتح</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <label>
+                    <input type="checkbox" id="notifications-toggle" />
+                    تفعيل إشعارات مواقيت الصلاة والأذكار
+                </label>
+            </div>
+        </div>
     </div>
 
     <h1 style="text-align: center; margin-top: 20px;">تطبيق آيات</h1>
@@ -24,13 +76,18 @@
             <div class="tab" onclick="openTab('advice')"><i class="fas fa-lightbulb"></i> النصائح الدينية</div>
             <div class="tab" onclick="openTab('hadith')"><i class="fas fa-quote-right"></i> حديث اليوم</div>
             <div class="tab" onclick="openTab('stories')"><i class="fas fa-video"></i> قصص الأنبياء</div>
-            <div class="tab" onclick="openTab('duaa-quran')"><i class="fas fa-prayer-hands"></i> أدعية من القرآن</div>
+            <div class="tab" onclick="openTab('podcasts')"><i class="fas fa-podcast"></i> بودكاست دينية مفيدة</div>
+            <div class="tab" onclick="openTab('duaa-quran')"><i class="fas fa-praying-hands"></i> أدعية من القرآن</div>
             <div class="tab" onclick="openTab('qibla')"><i class="fas fa-compass"></i> اتجاه القبلة</div>
             <div class="tab" onclick="openTab('hijri')"><i class="fas fa-calendar-alt"></i> التقويم الهجري</div>
             <div class="tab" onclick="openTab('audio-quran')"><i class="fas fa-headphones"></i> مكتبة القرآن الصوتية</div>
             <div class="tab" onclick="openTab('prophetic-duas')"><i class="fas fa-hands"></i> الأدعية النبوية</div>
+            <div class="tab" onclick="openTab('stats')"><i class="fas fa-chart-bar"></i> الإحصائيات</div>
+            <div class="tab" onclick="openTab('challenges')"><i class="fas fa-trophy"></i> التحديات</div>
+            <div class="tab" onclick="openTab('favorites')"><i class="fas fa-bookmark"></i> المفضلة</div>
         </div>
 
+        <!-- Tab Contents -->
         <div id="tasbe7" class="tab-content">
             <h2>سبحان الله وبحمده</h2>
             <div id="circle" onclick="count()">
@@ -54,10 +111,172 @@
 
         <div id="azkar" class="tab-content">
             <h2>الأذكار اليومية</h2>
-            <div id="azkar-content"></div>
-            <button onclick="prevZikr()">السابق</button>
-            <button onclick="nextZikr()">التالي</button>
-            <br /><br />
+            <div class="azkar-controls">
+                <button onclick="selectAzkarSection('azkar-sabah')">أذكار الصباح</button>
+                <button onclick="selectAzkarSection('azkar-masaa')">أذكار المساء</button>
+                <button onclick="selectAzkarSection('azkar-nawm')">أذكار النوم</button>
+            </div>
+            <div id="azkar-content">
+                <div class="azkar-section" id="azkar-sabah" style="display: none;">
+                    <h3>أذكار الصباح</h3>
+                    <div class="azkar-items">
+                        <div class="azkar-item">
+                            <p>رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>أعوذ بكلمات الله التامات من شر ما خلق (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'أعوذ بكلمات الله التامات من شر ما خلق')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم إني أصبحت أشهدك وأشهد حملة عرشك وملائكتك وجميع خلقك أنك أنت الله لا إله إلا أنت وحدك لا شريك لك وأن محمدا عبدك ورسولك. (٤)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم إني أصبحت أشهدك وأشهد حملة عرشك وملائكتك وجميع خلقك أنك أنت الله لا إله إلا أنت وحدك لا شريك لك وأن محمدا عبدك ورسولك.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>أصبحنا على فطرة الإسلام وعلى كلمة الإخلاص وعلى دين نبينا محمد صلى الله عليه وسلم وعلى ملة أبينا إبراهيم حنيفا مسلما وما كان من المشركين. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'أصبحنا على فطرة الإسلام وعلى كلمة الإخلاص وعلى دين نبينا محمد صلى الله عليه وسلم وعلى ملة أبينا إبراهيم حنيفا مسلما وما كان من المشركين.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم ما أصبح بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك فلك الحمد ولك الشكر. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم ما أصبح بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك فلك الحمد ولك الشكر.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم إني أعوذ بك من الهم والحزن وأعوذ بك من العجز والكسل وأعوذ بك من الجبن والبخل وأعوذ بك من غلبة الدين وقهر الرجال.</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم إني أعوذ بك من الهم والحزن وأعوذ بك من العجز والكسل وأعوذ بك من الجبن والبخل وأعوذ بك من غلبة الدين وقهر الرجال.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السموات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السموات والأرض ولا يؤوده حفظهما وهو العلي العظيم.</p>
+                            <button onclick="addToFavorites('azkar', 'الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السموات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السموات والأرض ولا يؤوده حفظهما وهو العلي العظيم.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم عافني في بدني اللهم عافني في سمعي اللهم عافني في بصري لا إله إلا أنت. اللهم إني أعوذ بك من الكفر والفقر وأعوذ بك من عذاب القبر لا إله إلا أنت. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم عافني في بدني اللهم عافني في سمعي اللهم عافني في بصري لا إله إلا أنت. اللهم إني أعوذ بك من الكفر والفقر وأعوذ بك من عذاب القبر لا إله إلا أنت.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>سبحان الله وبحمده عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته</p>
+                            <button onclick="addToFavorites('azkar', 'سبحان الله وبحمده عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>يا حي يا قيوم برحمتك أستغيث أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين.</p>
+                            <button onclick="addToFavorites('azkar', 'يا حي يا قيوم برحمتك أستغيث أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم عالم الغيب والشهادة فاطر السماوات والأرض رب كل شيء ومليكه أشهد أن لا إله إلا أنت أعوذ بك من شر نفسي ومن شر الشيطان وشركه وأن أقترف على نفسي سوءا أو أجره إلى مسلم</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم عالم الغيب والشهادة فاطر السماوات والأرض رب كل شيء ومليكه أشهد أن لا إله إلا أنت أعوذ بك من شر نفسي ومن شر الشيطان وشركه وأن أقترف على نفسي سوءا أو أجره إلى مسلم')">إضافة للمفضلة</button>
+                        </div>
+                    </div>
+                    <div class="azkar-navigation">
+                        <button onclick="prevZikr('azkar-sabah')">السابق</button>
+                        <button onclick="nextZikr('azkar-sabah')">التالي</button>
+                    </div>
+                </div>
+                <div class="azkar-section" id="azkar-masaa" style="display: none;">
+                    <h3>أذكار المساء</h3>
+                    <div class="azkar-items">
+                        <div class="azkar-item">
+                            <p>رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>أعوذ بكلمات الله التامات من شر ما خلق (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'أعوذ بكلمات الله التامات من شر ما خلق')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم إني أمسيت أشهدك وأشهد حملة عرشك وملائكتك وجميع خلقك أنك أنت الله لا إله إلا أنت وحدك لا شريك لك وأن محمدا عبدك ورسولك. (٤)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم إني أمسيت أشهدك وأشهد حملة عرشك وملائكتك وجميع خلقك أنك أنت الله لا إله إلا أنت وحدك لا شريك لك وأن محمدا عبدك ورسولك.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>أمسينا على فطرة الإسلام وعلى كلمة الإخلاص وعلى دين نبينا محمد صلى الله عليه وسلم وعلى ملة أبينا إبراهيم حنيفا مسلما وما كان من المشركين. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'أمسينا على فطرة الإسلام وعلى كلمة الإخلاص وعلى دين نبينا محمد صلى الله عليه وسلم وعلى ملة أبينا إبراهيم حنيفا مسلما وما كان من المشركين.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم ما أمسي بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك فلك الحمد ولك الشكر. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم ما أمسي بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك فلك الحمد ولك الشكر.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم إني أعوذ بك من الهم والحزن وأعوذ بك من العجز والكسل وأعوذبك من الجبن والبخل وأعوذ بك من غلبة الدين وقهر الرجال.</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم إني أعوذ بك من الهم والحزن وأعوذ بك من العجز والكسل وأعوذ بك من الجبن والبخل وأعوذ بك من غلبة الدين وقهر الرجال.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السموات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السموات والأرض ولا يؤوده حفظهما وهو العلي العظيم.</p>
+                            <button onclick="addToFavorites('azkar', 'الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السموات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السموات والأرض ولا يؤوده حفظهما وهو العلي العظيم.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم عافني في بدني اللهم عافني في سمعي اللهم عافني في بصري لا إله إلا أنت. اللهم إني أعوذ بك من الكفر والفقر وأعوذ بك من عذاب القبر لا إله إلا أنت. (٣)</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم عافني في بدني اللهم عافني في سمعي اللهم عافني في بصري لا إله إلا أنت. اللهم إني أعوذ بك من الكفر والفقر وأعوذ بك من عذاب القبر لا إله إلا أنت.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>سبحان الله وبحمده عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته</p>
+                            <button onclick="addToFavorites('azkar', 'سبحان الله وبحمده عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>يا حي يا قيوم برحمتك أستغيث أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين.</p>
+                            <button onclick="addToFavorites('azkar', 'يا حي يا قيوم برحمتك أستغيث أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم عالم الغيب والشهادة فاطر السماوات والأرض رب كل شيء ومليكه أشهد أن لا إله إلا أنت أعوذ بك من شر نفسي ومن شر الشيطان وشركه وأن أقترف على نفسي سوءا أو أجره إلى مسلم</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم عالم الغيب والشهادة فاطر السماوات والأرض رب كل شيء ومليكه أشهد أن لا إله إلا أنت أعوذ بك من شر نفسي ومن شر الشيطان وشركه وأن أقترف على نفسي سوءا أو أجره إلى مسلم')">إضافة للمفضلة</button>
+                        </div>
+                    </div>
+                    <div class="azkar-navigation">
+                        <button onclick="prevZikr('azkar-masaa')">السابق</button>
+                        <button onclick="nextZikr('azkar-masaa')">التالي</button>
+                    </div>
+                </div>
+                <div class="azkar-section" id="azkar-nawm" style="display: none;">
+                    <h3>أذكار النوم</h3>
+                    <div class="azkar-items">
+                        <div class="azkar-item">
+                            <p>اللهم عالم الغيب والشهادة فاطر السموات والأرض رب كل شيء ومليكه، أشهد أن لا إله إلا أنت، أعوذ بك من شر نفسي ومن شر الشيطان وشركه، وأن أقترف على نفسي سوءا أو أجره إلى مسلم.</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم عالم الغيب والشهادة فاطر السموات والأرض رب كل شيء ومليكه، أشهد أن لا إله إلا أنت، أعوذ بك من شر نفسي ومن شر الشيطان وشركه، وأن أقترف على نفسي سوءا أو أجره إلى مسلم.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>أعوذ بالله من الشيطان الرحيم</p>
+                            <button onclick="addToFavorites('azkar', 'أعوذ بالله من الشيطان الرحيم')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السموات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السموات والأرض ولا يؤوده حفظهما وهو العلي العظيم [البقرة 255]</p>
+                            <button onclick="addToFavorites('azkar', 'الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السموات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السموات والأرض ولا يؤوده حفظهما وهو العلي العظيم [البقرة 255]')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>يجمع كفيه ثم ينفث فيهما والقراءة فيهما: قل هو الله أحد وقل أعوذ برب الفلق وقل أعوذ برب الناس ومسح ما استطاع من الجسد يبدأ بهما على رأسه ووجه وما أقبل من جسده</p>
+                            <button onclick="addToFavorites('azkar', 'يجمع كفيه ثم ينفث فيهما والقراءة فيهما: قل هو الله أحد وقل أعوذ برب الفلق وقل أعوذ برب الناس ومسح ما استطاع من الجسد يبدأ بهما على رأسه ووجه وما أقبل من جسده')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>باسمك ربي وضعت جنبي، وبك أرفعه، فإن أمسكت نفسي فارحمها، وإن أرسلتها فاحفظها بما تحفظ به عبادك الصالحين.</p>
+                            <button onclick="addToFavorites('azkar', 'باسمك ربي وضعت جنبي، وبك أرفعه، فإن أمسكت نفسي فارحمها، وإن أرسلتها فاحفظها بما تحفظ به عبادك الصالحين.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>اللهم إنك خلقت نفسي وأنت توفاها لك مماتها ومحياها، إن أحييتها فاحفظها، وإن أمتها فاغفر لها. اللهم إني أسألك العافية.</p>
+                            <button onclick="addToFavorites('azkar', 'اللهم إنك خلقت نفسي وأنت توفاها لك مماتها ومحياها، إن أحييتها فاحفظها، وإن أمتها فاغفر لها. اللهم إني أسألك العافية.')">إضافة للمفضلة</button>
+                        </div>
+                        <div class="azkar-item">
+                            <p>الحمد لله الذي أطعمنا وسقانا، وكفانا، وآوانا، فكم ممن لا كافي له ولا مؤوي.</p>
+                            <button onclick="addToFavorites('azkar', 'الحمد لله الذي أطعمنا وسقانا، وكفانا، وآوانا، فكم ممن لا كافي له ولا مؤوي.')">إضافة للمفضلة</button>
+                        </div>
+                    </div>
+                    <div class="azkar-navigation">
+                        <button onclick="prevZikr('azkar-nawm')">السابق</button>
+                        <button onclick="nextZikr('azkar-nawm')">التالي</button>
+                    </div>
+                </div>
+            </div>
             <button id="azkarGalleryBtn">معرض الأذكار</button>
         </div>
 
@@ -78,7 +297,7 @@
             <div id="quranResults" class="sura-buttons"></div>
             <div id="quranContent" style="display: none;">
                 <h2 id="suraTitle"></h2>
-                <p id="suraText"></p>
+                <div id="suraText"></div>
                 <button onclick="backToResults()">الرجوع</button>
             </div>
         </div>
@@ -112,6 +331,7 @@
             <div id="advice-content" style="display: none;">
                 <h3 id="advice-title"></h3>
                 <p id="advice-text"></p>
+                <button onclick="addToFavorites('advice', adviceData[currentAdviceKey].title + ': ' + adviceData[currentAdviceKey].text)">إضافة للمفضلة</button>
                 <button onclick="backToAdviceList()">العودة إلى القائمة</button>
             </div>
         </div>
@@ -121,6 +341,7 @@
             <div id="hadith-content">
                 <p id="hadith-text">جاري تحميل الحديث...</p>
                 <p id="hadith-reference"></p>
+                <button onclick="addToFavorites('hadith', $('#hadith-text').text() + ' [' + $('#hadith-reference').text() + ']')">إضافة للمفضلة</button>
             </div>
             <button onclick="loadHadith()">تحديث الحديث</button>
         </div>
@@ -130,23 +351,22 @@
             <div id="stories-grid" class="grid-container"></div>
         </div>
 
+        <div id="podcasts" class="tab-content">
+            <h2>بودكاست دينية مفيدة</h2>
+            <div id="podcasts-grid" class="grid-container"></div>
+        </div>
+
         <div id="duaa-quran" class="tab-content">
             <h2>أدعية من القرآن الكريم</h2>
-            <div class="container cards active">
-                <span class="nav-btn" id="left-btn"><i class="fas fa-chevron-left"></i></span>
-                <span class="card">
-                    <span class="content"></span>
-                    <span class="details">
-                        <span class="soura_name"></span>
-                        <span class="ayah_num"></span>
-                    </span>
-                </span>
-                <span class="nav-btn" id="right-btn"><i class="fas fa-chevron-right"></i></span>
+            <div id="duaa-content">
+                <div class="duaa-section" id="duaa-quran-section">
+                    <div class="duaa-items"></div>
+                    <div class="duaa-navigation">
+                        <button onclick="prevDuaa()">السابق</button>
+                        <button onclick="nextDuaa()">التالي</button>
+                    </div>
+                </div>
             </div>
-            <div class="btns-container">
-                <span id="audioBtn" class="btns"><i class="fas fa-play"></i></span>
-            </div>
-            <audio id="myAudio"></audio>
         </div>
 
         <div id="qibla" class="tab-content">
@@ -158,18 +378,138 @@
 
         <div id="hijri" class="tab-content">
             <h2>التقويم الهجري</h2>
-            <div id="hijri-date"></div>
+            <div id="hijri-date">
+                <table class="hijri-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ الهجري</th>
+                            <th>التاريخ الميلادي</th>
+                            <th>اليوم</th>
+                            <th>أحداث دينية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hijri-table-body">
+                        <!-- Content will be filled by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="audio-quran" class="tab-content">
             <h2>مكتبة القرآن الصوتية</h2>
-            <div id="audio-grid" class="grid-container"></div>
-            <button id="download-all-audio" style="margin-top: 20px;">تنزيل المكتبة الصوتية كاملة</button>
+            <div id="audio-grid" class="grid-container">
+                <div class="audio-item">
+                    <p>الشيخ أحمد بن علي العجمي</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('ahmed-ajami')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ فارس عباد</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('fares-abbad')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>محمد صديق المنشاوي</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('minshawi')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ ماهر المعيقلي</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('maher-muaiqly')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ ياسر الدوسري</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('yasser-dosari')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ سعد الغامدي</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('saad-ghamdi')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>سعود الشريم</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('saud-shuraim')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ عبد الرحمن السديس</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('sudais')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ مشاري العفاسي</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('mishary-afasy')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ محمد اللحيدان</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('mohammed-luhaidan')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ خالد الجليل</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('khalid-jaleel')">تحميل</button>
+                </div>
+                <div class="audio-item">
+                    <p>الشيخ رعد محمد الكردي</p>
+                    <p>حفص عن عاصم</p>
+                    <button onclick="downloadAudio('raad-kurdi')">تحميل</button>
+                </div>
+            </div>
         </div>
 
         <div id="prophetic-duas" class="tab-content">
             <h2>الأدعية النبوية</h2>
-            <div id="duas-list"></div>
+            <div id="duas-list">
+                <div class="dua-item">
+                    <p class="dua-text">اللهم اغفر لي ذنبي كله، دقه وجله، وأوله وآخره، وعلانيته وسره.</p>
+                    <p class="dua-source">صحيح مسلم</p>
+                    <button onclick="addToFavorites('prophetic-duas', 'اللهم اغفر لي ذنبي كله، دقه وجله، وأوله وآخره، وعلانيته وسره. [صحيح مسلم]')">إضافة للمفضلة</button>
+                </div>
+                <div class="dua-item">
+                    <p class="dua-text">اللهم إني أعوذ بك من الهم والحزن، والعجز والكسل.</p>
+                    <p class="dua-source">صحيح البخاري</p>
+                    <button onclick="addToFavorites('prophetic-duas', 'اللهم إني أعوذ بك من الهم والحزن، والعجز والكسل. [صحيح البخاري]')">إضافة للمفضلة</button>
+                </div>
+                <div class="dua-item">
+                    <p class="dua-text">اللهم اجعل في قلبي نورا، وفي بصري نورا، وفي سمعي نورا.</p>
+                    <p class="dua-source">صحيح البخاري</p>
+                    <button onclick="addToFavorites('prophetic-duas', 'اللهم اجعل في قلبي نورا، وفي بصري نورا، وفي سمعي نورا. [صحيح البخاري]')">إضافة للمفضلة</button>
+                </div>
+                <div class="dua-item">
+                    <p class="dua-text">اللهم إني أسألك علما نافعا، ورزقا طيبا، وعملا متقبلا.</p>
+                    <p class="dua-source">سنن ابن ماجه</p>
+                    <button onclick="addToFavorites('prophetic-duas', 'اللهم إني أسألك علما نافعا، ورزقا طيبا، وعملا متقبلا. [سنن ابن ماجه]')">إضافة للمفضلة</button>
+                </div>
+                <div class="dua-item">
+                    <p class="dua-text">اللهم إني أعوذ بك من زوال نعمتك، وتحول عافيتك، وفجاءة نقمتك، وجميع سخطك.</p>
+                    <p class="dua-source">صحيح مسلم</p>
+                    <button onclick="addToFavorites('prophetic-duas', 'اللهم إني أعوذ بك من زوال نعمتك، وتحول عافيتك، وفجاءة نقمتك، وجميع سخطك. [صحيح مسلم]')">إضافة للمفضلة</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="stats" class="tab-content">
+            <h2>الإحصائيات</h2>
+            <table id="stats-table">
+                <tr><th>النشاط</th><th>العدد</th></tr>
+                <tr><td>التسبيح</td><td id="stats-tasbe7">0</td></tr>
+                <tr><td>قراءة القرآن</td><td id="stats-quran">0</td></tr>
+                <tr><td>الأدعية</td><td id="stats-duaa">0</td></tr>
+            </table>
+        </div>
+
+        <div id="challenges" class="tab-content">
+            <h2>التحديات الدينية</h2>
+            <div id="challenges-list"></div>
+        </div>
+
+        <div id="favorites" class="tab-content">
+            <h2>المفضلة</h2>
+            <div id="favorites-list"></div>
         </div>
     </div>
 

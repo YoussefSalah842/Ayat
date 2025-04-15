@@ -1,10 +1,12 @@
+/* Font Face from Working Project */
 @font-face {
     font-family: 'QCF2001';
     src: url('QCF2001.ttf') format('truetype');
 }
 
+/* General Body Styles from Working Project */
 body {
-    font-family: 'QCF2001', sans-serif;
+    font-family: 'Tajawal', sans-serif;
     background-color: #f4f4f4;
     color: #333;
     margin: 0;
@@ -13,6 +15,7 @@ body {
     font-size: 16px;
     line-height: 1.6;
     transition: background-color 0.3s ease, color 0.3s ease;
+    direction: rtl;
 }
 
 body.dark-mode {
@@ -20,10 +23,67 @@ body.dark-mode {
     color: #f4f4f4;
 }
 
+/* App Banner Styles from Broken Project */
+#app-banner {
+    background-color: #692079;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.banner-content {
+    flex: 1;
+    text-align: right;
+    padding-right: 45px;
+}
+
+.banner-content h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.banner-content p {
+    margin: 5px 0 0;
+    font-size: 1em;
+}
+
+.banner-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    background-color: #fff;
+    color: #692079;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn i {
+    font-size: 1.2em;
+}
+
+body.dark-mode .action-btn {
+    background-color: #692079;
+    color: #fff;
+}
+
+/* Container Styles from Working Project */
 .container {
     width: 90%;
     max-width: 1200px;
-    margin: 20px auto;
+    margin: 80px auto 20px; /* Adjusted margin-top to account for fixed navbar */
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -36,6 +96,7 @@ body.dark-mode .container {
     color: #f4f4f4;
 }
 
+/* Tabs Styles from Working Project */
 .tabs {
     display: flex;
     justify-content: center;
@@ -58,7 +119,7 @@ body.dark-mode .container {
 }
 
 .tab i {
-    margin-right: 8px;
+    margin-left: 8px;
 }
 
 .tab:hover {
@@ -71,6 +132,7 @@ body.dark-mode .container {
     border-top: 1px solid #eee;
 }
 
+/* Circle (Tasbe7) Styles from Working Project */
 #circle {
     background-color: #692079;
     width: 150px;
@@ -99,6 +161,7 @@ body.dark-mode .container {
     100% { transform: scale(1); }
 }
 
+/* Button Styles from Working Project */
 button {
     padding: 12px 25px;
     background-color: #692079;
@@ -108,12 +171,14 @@ button {
     cursor: pointer;
     font-size: 1.1em;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 5px;
 }
 
 button:active {
     transform: scale(0.95);
 }
 
+/* Select Styles from Working Project */
 select {
     padding: 10px;
     font-size: 1em;
@@ -127,8 +192,8 @@ select {
     appearance: none;
     background-image: url('data:image/svg+xml;utf8,<svg fill="%23692079" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: left 10px center;
-    padding-left: 30px;
+    background-position: right 10px center;
+    padding-right: 30px;
     transition: border-color 0.3s ease;
 }
 
@@ -143,7 +208,8 @@ body.dark-mode select {
     border-color: #692079;
 }
 
-#moreAzkarDesignsBtn, #download-all-audio {
+/* More Azkar Designs Button Styles from Working Project */
+#moreAzkarDesignsBtn {
     margin: 20px auto 0;
     display: flex;
     align-items: center;
@@ -159,7 +225,7 @@ body.dark-mode select {
     transition: background-color 0.3s ease;
 }
 
-#moreAzkarDesignsBtn:hover, #download-all-audio:hover {
+#moreAzkarDesignsBtn:hover {
     background-color: #5a1a6a;
 }
 
@@ -167,6 +233,7 @@ body.dark-mode select {
     font-size: 1.2em;
 }
 
+/* Modal Styles from Working Project */
 .modal {
     display: none;
     position: fixed;
@@ -185,19 +252,23 @@ body.dark-mode select {
     padding: 20px;
     border-radius: 8px;
     text-align: center;
+    max-width: 600px;
+    width: 90%;
+    margin: auto;
 }
 
 .close-button {
     cursor: pointer;
-    float: right;
+    float: left;
     font-size: 1.5em;
 }
 
-#galleryModal {
+#galleryModal, #settings-modal {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
@@ -208,12 +279,12 @@ body.dark-mode select {
     z-index: 1000;
 }
 
-#galleryModal .modal-content {
+#galleryModal .modal-content, #settings-modal .modal-content {
     background-color: rgba(255, 255, 255, 0.95);
     padding: 30px;
     border-radius: 10px;
     width: 90%;
-    max-width: 900px;
+    max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -221,9 +292,23 @@ body.dark-mode select {
     position: relative;
 }
 
-body.dark-mode #galleryModal .modal-content {
+body.dark-mode #galleryModal .modal-content, body.dark-mode #settings-modal .modal-content {
     background-color: rgba(44, 62, 80, 0.95);
     color: #f4f4f4;
+}
+
+.settings-option {
+    margin: 15px 0;
+}
+
+.settings-option label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.settings-option select, .settings-option input[type="checkbox"] {
+    margin-top: 5px;
 }
 
 #galleryImages {
@@ -276,23 +361,25 @@ body.dark-mode #galleryModal .modal-content {
     border-radius: 10px;
 }
 
-#prayer-times table {
+/* Table Styles from Working Project */
+#prayer-times table, #stats-table, .hijri-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-#prayer-times th, #prayer-times td {
+#prayer-times th, #prayer-times td, #stats-table th, #stats-table td, .hijri-table th, .hijri-table td {
     padding: 10px;
     border: 1px solid #ddd;
     text-align: center;
 }
 
-#prayer-times th {
+#prayer-times th, #stats-table th, .hijri-table th {
     background-color: #692079;
     color: white;
 }
 
+/* Asma Allah Styles from Working Project */
 .asma-item {
     display: inline-block;
     border: 2px solid #692079;
@@ -309,6 +396,7 @@ body.dark-mode #galleryModal .modal-content {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Advice Styles from Working Project */
 .advice-item {
     border: 2px solid #692079;
     padding: 10px;
@@ -329,6 +417,7 @@ body.dark-mode #galleryModal .modal-content {
     line-height: 1.8;
 }
 
+/* Quran Sura Buttons Styles from Working Project */
 .sura-buttons {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -356,28 +445,288 @@ body.dark-mode #galleryModal .modal-content {
     margin-top: 5px;
 }
 
-#dark-mode-toggle {
-    position: fixed;
-    top: 20px;
-    left: 20px;
+/* Quran Text Styles from Working Project */
+.quran-text {
+    font-family: 'Amiri Quran', serif;
+    font-size: 2.2rem;
+    line-height: 2.8;
+    margin: 20px auto;
+    display: block;
+    direction: rtl;
+    text-align: center;
+    max-width: 800px;
+    padding: 15px;
+    position: relative;
+    border: 1px solid #692079;
+    border-radius: 10px;
     background-color: #fff;
-    color: #692079;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-body.dark-mode #dark-mode-toggle {
+.quran-text .ayah-number {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
     background-color: #692079;
-    color: #fff;
+    color: white;
+    font-size: 1rem;
+    margin-left: 10px;
+    vertical-align: middle;
 }
 
-#dark-mode-toggle i {
+@media (max-width: 767px) {
+    .quran-text {
+        font-size: 1.8rem;
+        line-height: 2.5;
+    }
+    .quran-text .ayah-number {
+        width: 25px;
+        height: 25px;
+        line-height: 25px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Duaa Quran Styles from Working Project */
+#duaa-quran .duaa-section {
+    margin-bottom: 30px;
+}
+
+#duaa-quran .duaa-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#duaa-quran .duaa-item {
+    border: 2px solid #692079;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: right;
+}
+
+#duaa-quran .duaa-item p {
+    font-family: 'Amiri Quran', serif;
+    font-size: 1.4em;
+    line-height: 1.8;
+    margin: 0 0 10px;
+}
+
+#duaa-quran .duaa-navigation {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#duaa-quran .duaa-navigation button {
+    padding: 10px 20px;
+}
+
+/* Qibla Direction Styles from Working Project */
+#qibla-direction iframe {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Audio Grid Styles from Working Project */
+#audio-grid .audio-item {
+    text-align: center;
+    padding: 10px;
+}
+
+#audio-grid .audio-item p {
+    margin: 5px 0;
+}
+
+#audio-grid .audio-item button {
+    width: 100%;
+    max-width: 150px;
+}
+
+/* Prophetic Duas Styles from Working Project */
+#duas-list .dua-item {
+    border: 2px solid #692079;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    text-align: right;
     font-size: 1.2em;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+#duas-list .dua-item .dua-text {
+    margin-bottom: 10px;
+    font-family: 'Amiri Quran', serif;
+    line-height: 1.8;
+}
+
+#duas-list .dua-item .dua-source {
+    font-size: 0.9em;
+    color: #666;
+}
+
+#duas-list .dua-item button {
+    margin-top: 10px;
+}
+
+/* Loading Screen Styles from Working Project */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #692079;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+#loading-screen.fade-out {
+    opacity: 0;
+    transform: scale(1.1);
+    pointer-events: none;
+}
+
+#loading-screen .loading-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: logoPulse 2s infinite ease-in-out;
+}
+
+@keyframes logoPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#loading-screen .loading-text {
+    color: #fff;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 300px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    width: 0;
+    height: 100%;
+    background-color: #5a1a6a;
+    animation: progressAnimation 5s linear forwards;
+}
+
+@keyframes progressAnimation {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+/* Azkar Styles from Working Project */
+.azkar-controls {
+    margin-bottom: 20px;
+}
+
+.azkar-controls button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+}
+
+.azkar-section {
+    margin-bottom: 30px;
+}
+
+.azkar-section h3 {
+    font-size: 1.5em;
+    color: #692079;
+    margin-bottom: 15px;
+}
+
+.azkar-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.azkar-item {
+    border: 2px solid #692079;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: right;
+}
+
+.azkar-item p {
+    font-family: 'Amiri Quran', serif;
+    font-size: 1.4em;
+    line-height: 1.8;
+    margin: 0 0 10px;
+}
+
+.azkar-item button {
+    padding: 8px 15px;
+    font-size: 1em;
+}
+
+.azkar-navigation {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.azkar-navigation button {
+    padding: 10px 20px;
+}
+
+/* Challenges Styles from Working Project */
+.challenge-item {
+    border: 2px solid #692079;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.challenge-item.completed {
+    background-color: #e0f7e0;
+}
+
+.challenge-item button {
+    padding: 8px 15px;
+}
+
+/* Favorites Styles from Working Project */
+.favorite-item {
+    border: 2px solid #692079;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    font-size: 1.2em;
+    text-align: right;
+}
+
+/* Hadith Styles from Working Project */
 #hadith-content {
     font-size: 1.2em;
     margin: 20px 0;
@@ -388,6 +737,7 @@ body.dark-mode #dark-mode-toggle {
     color: #666;
 }
 
+/* Grid Container Styles from Working Project */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -400,183 +750,4 @@ body.dark-mode #dark-mode-toggle {
     height: 200px;
     border-radius: 10px;
     border: none;
-}
-
-.quran-text {
-    font-family: 'QCF2001', serif;
-    font-size: 2rem;
-    line-height: 2.5;
-    margin: 10px auto;
-    display: block;
-    direction: rtl;
-    text-align: center;
-    max-width: 800px;
-    padding: 10px;
-    position: relative;
-}
-
-.quran-text .ayah-number {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    line-height: 25px;
-    text-align: center;
-    border-radius: 50%;
-    background-color: #692079;
-    color: white;
-    font-size: 1rem;
-    margin-left: 10px;
-}
-
-@media (max-width: 767px) {
-    .quran-text {
-        font-size: 1.5rem;
-    }
-    .quran-text .ayah-number {
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
-        font-size: 0.9rem;
-    }
-}
-
-#duaa-quran .cards {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-}
-
-#duaa-quran .card {
-    background: #fff;
-    color: #333;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
-    padding: 20px;
-    text-align: center;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-body.dark-mode #duaa-quran .card {
-    background: #2c3e50;
-    color: #f4f4f4;
-}
-
-#duaa-quran .content {
-    font-family: 'QCF2001', serif;
-    font-size: 2rem;
-    line-height: 2.5;
-    margin: 0 auto;
-    display: block;
-    direction: rtl;
-    text-align: center;
-    max-width: 700px;
-    padding: 10px;
-}
-
-@media (max-width: 767px) {
-    #duaa-quran .content {
-        font-size: 1.5rem;
-    }
-}
-
-#duaa-quran .details {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    font-size: 1.2rem;
-    color: #666;
-}
-
-body.dark-mode #duaa-quran .details {
-    color: #ccc;
-}
-
-#duaa-quran .nav-btn {
-    background: #692079;
-    color: #fff;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease, opacity 0.3s ease;
-    margin: 0 10px;
-}
-
-#duaa-quran .nav-btn:hover {
-    background: #5a1a6a;
-}
-
-#duaa-quran #left-btn {
-    opacity: 0.5;
-}
-
-#duaa-quran #right-btn {
-    opacity: 1;
-}
-
-#duaa-quran .btns-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
-
-#duaa-quran .btns {
-    background: #692079;
-    color: #fff;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-#duaa-quran .btns:hover {
-    background: #5a1a6a;
-}
-
-#qibla-direction iframe {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#audio-grid .audio-item {
-    text-align: center;
-    padding: 10px;
-}
-
-#audio-grid .audio-item button {
-    width: 100%;
-    max-width: 150px;
-}
-
-#duas-list .dua-item {
-    border: 2px solid #692079;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 10px;
-    text-align: right;
-    font-size: 1.2em;
-}
-
-#duas-list .dua-item .dua-text {
-    margin-bottom: 10px;
-}
-
-#duas-list .dua-item .dua-source {
-    font-size: 0.9em;
-    color: #666;
-}
-
-#duas-list .dua-item button {
-    margin-top: 10px;
 }
