@@ -1,10 +1,10 @@
 # Ayat
-![Image](https://github.com/user-attachments/assets/9ae73263-922d-421c-9c05-99dd175fb5f6)
+![Image](https://github.com/user-attachments/assets/125efbae-2c15-40be-b975-852b18fc0928)
 A simple web application that provides you with services such as prayer times, daily supplications, and religious questions in a question-and-answer system. The application is compatible with all devices and features a simple and easy-to-use design to make it easy for the user to access information quickly and comfortably.
 
 # What's new in the new version 1.5.0.14:
 
-![Image](https://github.com/user-attachments/assets/6fba5ec9-b962-4361-9cd2-961dad31dfdb)
+![Image](https://github.com/user-attachments/assets/28ad483f-af9c-44d6-9fb2-766f887eb483)
 
 New improvements and fixes
 
