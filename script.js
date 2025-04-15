@@ -595,27 +595,27 @@ $(document).ready(function () {
 
     // Stories Section
     const stories = [
-        { title: "قصة آدم عليه السلام", videoId: "dQw4w9WgXcQ" },
-        { title: "قصة نوح عليه السلام", videoId: "e4q6eaLn2mY" },
-        { title: "قصة إبراهيم عليه السلام", videoId: "yXzM2zQ3a0w" },
-        { title: "قصة يوسف عليه السلام", videoId: "placeholder4" },
-        { title: "قصة موسى عليه السلام", videoId: "placeholder5" },
-        { title: "قصة عيسى عليه السلام", videoId: "placeholder6" },
-        { title: "قصة محمد صلى الله عليه وسلم", videoId: "placeholder7" },
-        { title: "قصة هود عليه السلام", videoId: "placeholder8" },
-        { title: "قصة صالح عليه السلام", videoId: "placeholder9" },
-        { title: "قصة لوط عليه السلام", videoId: "placeholder10" },
-        { title: "قصة شعيب عليه السلام", videoId: "placeholder11" },
-        { title: "قصة إسماعيل عليه السلام", videoId: "placeholder12" },
-        { title: "قصة إسحاق عليه السلام", videoId: "placeholder13" },
-        { title: "قصة يعقوب عليه السلام", videoId: "placeholder14" },
-        { title: "قصة أيوب عليه السلام", videoId: "placeholder15" },
-        { title: "قصة ذو الكفل عليه السلام", videoId: "placeholder16" },
-        { title: "قصة يونس عليه السلام", videoId: "placeholder17" },
-        { title: "قصة زكريا عليه السلام", videoId: "placeholder18" },
-        { title: "قصة يحيى عليه السلام", videoId: "placeholder19" },
-        { title: "قصة الياس عليه السلام", videoId: "placeholder20" },
-        { title: "قصة إدريس عليه السلام", videoId: "placeholder21" }
+        { title: "قصة آدم عليه السلام", videoId: "5jGpjNu6seA" },
+        { title: "قصة نوح عليه السلام", videoId: "_CtwHiJnYkk" },
+        { title: "قصة إبراهيم عليه السلام", videoId: "LHDRo1o8Z3I" },
+        { title: "قصة يوسف عليه السلام", videoId: "ksg__AfTgVg" },
+        { title: "قصة موسى عليه السلام", videoId: "jH9xvvffB5o" },
+        { title: "قصة عيسى عليه السلام", videoId: "VOEXU0suTMo" },
+        { title: "قصة محمد صلى الله عليه وسلم", videoId: "H5t9ugFROvQ" },
+        { title: "قصة هود عليه السلام", videoId: "kKKAVtiaxdU" },
+        { title: "قصة صالح عليه السلام", videoId: "v_p-YK6ItqQ" },
+        { title: "قصة لوط عليه السلام", videoId: "zETPemfAzXA" },
+        { title: "قصة شعيب عليه السلام", videoId: "plfgl11XmFY" },
+        { title: "قصة إسماعيل عليه السلام", videoId: "dtmBUp2zLu4" },
+        { title: "قصة إسحاق عليه السلام", videoId: "yRBgCL9frWY" },
+        { title: "قصة يعقوب عليه السلام", videoId: "S93Oqwvumw0" },
+        { title: "قصة أيوب عليه السلام", videoId: "Zoadcu3Ln_0" },
+        { title: "قصة ذو الكفل عليه السلام", videoId: "xWUbKvTYtuI" },
+        { title: "قصة يونس عليه السلام", videoId: "onudakV-4b4" },
+        { title: "قصة زكريا عليه السلام", videoId: "dhJuEpCfnWw" },
+        { title: "قصة يحيى عليه السلام", videoId: "73Egv37giAc" },
+        { title: "قصة الياس عليه السلام", videoId: "yPVpe2g_ROY" },
+        { title: "قصة إدريس عليه السلام", videoId: "vt149FD7Oio" }
     ];
 
     function loadStories() {
@@ -633,16 +633,16 @@ $(document).ready(function () {
 
     // Podcasts Section
     const podcasts = [
-        { title: "بودكاست ديني 1", videoId: "dQw4w9WgXcQ" },
-        { title: "بودكاست ديني 2", videoId: "e4q6eaLn2mY" },
-        { title: "بودكاست ديني 3", videoId: "yXzM2zQ3a0w" },
-        { title: "بودكاست ديني 4", videoId: "placeholder4" },
-        { title: "بودكاست ديني 5", videoId: "placeholder5" },
-        { title: "بودكاست ديني 6", videoId: "placeholder6" },
-        { title: "بودكاست ديني 7", videoId: "placeholder7" },
-        { title: "بودكاست ديني 8", videoId: "placeholder8" },
-        { title: "بودكاست ديني 9", videoId: "placeholder9" },
-        { title: "بودكاست ديني 10", videoId: "placeholder10" }
+        { title: "فاهم 36 | سلسلة تذوق العبادات - (1) الصلاة | مع د. أحمد العربي", videoId: "63_AOCldyXo" },
+        { title: "القضاء و القدر : بين الإيمان و العمل | د.عبدالرحمن الحرمي", videoId: "am6jfmu7E_M" },
+        { title: "إيه المشكلة في التوبة؟!", videoId: "qHXCBBBXes4" },
+        { title: "العودة للذنب بعد التوبة | الشيخ د.عثمان محمد الخميس", videoId: "B5IALnKOHqE" },
+        { title: "صفحة جديدة مع الله - فضفضة الأحد - محمد الغليظ", videoId: "zVj2KSM99GA" },
+        { title: "فاهم 37 | سلسلة تذوق العبادات - (2) القرآن | مع د. أحمد العربي", videoId: "hK-9Be0prrA" },
+        { title: "فاهم 42 | سلسلة تذوق العبادات - (4) الذكر | مع د. أحمد العربي", videoId: "nkil1U1GxdA" },
+        { title: "فاهم 5 | قصتي مع حفظ القرآن الكريم | مع د. سعيد أبو العلا حمزة", videoId: "q8EYrvWn4n0" },
+        { title: "فاهم 58 | فقه التعامل مع النعم | مع الشيخ/ هيثم سمير", videoId: "_85D3CqkoxA" },
+        { title: "فاهم 54 | سلسلة لازم تتحرر - (1) التحرر من الغفلة | مع الشيخ/ أمجد سمير", videoId: "agFMbV32JIc" }
     ];
 
     function loadPodcasts() {
